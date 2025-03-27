@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:padding="30dp"
         android:orientation="vertical"
-        tools:context=".WelcomeActivity">
+        tools:context=".ui.WelcomeActivity">
 
         <ImageView
             android:layout_width="250dp"

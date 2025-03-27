@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="25dp"
-    tools:context=".DetailWithdrawActivity">
+    tools:context=".ui.DetailWithdrawActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
