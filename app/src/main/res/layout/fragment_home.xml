@@ -21,23 +21,6 @@
             android:orientation="vertical"
             android:paddingHorizontal="30dp">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer3"
-                android:layout_width="match_parent"
-                android:layout_marginTop="25dp"
-                android:visibility="gone"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_shimmer_row"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
             <RelativeLayout
                 android:id="@+id/welcome"
                 android:layout_width="match_parent"
@@ -63,23 +46,6 @@
                     android:src="@drawable/profil_placeholder" />
 
             </RelativeLayout>
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer2"
-                android:layout_width="match_parent"
-                android:layout_marginTop="15dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="@drawable/bg_shimmer_row"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <LinearLayout
                 android:id="@+id/home"

@@ -23,10 +23,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Jadikan dompetku menjadi dompet digital nomer satu anda!"
+            android:layout_marginTop="40dp"
+            android:text="Jadikan ISA Pay menjadi dompet digital nomer satu anda!"
             android:textColor="@color/primary"
             android:textSize="30sp"
-            android:layout_marginTop="40dp"
             android:textStyle="bold" />
 
         <Button
