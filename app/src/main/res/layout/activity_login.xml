@@ -42,7 +42,7 @@
         android:layout_gravity="center">
 
         <EditText
-            android:id="@+id/inputHp"
+            android:id="@+id/txtNoHp"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginBottom="15dp"
@@ -53,7 +53,7 @@
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/inputPassword"
+            android:id="@+id/txtPin"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:paddingStart="12sp"

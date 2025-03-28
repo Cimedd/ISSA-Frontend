@@ -51,7 +51,7 @@
                 android:layout_gravity="center">
 
                 <EditText
-                    android:id="@+id/inputNama"
+                    android:id="@+id/txtNama"
                     android:paddingStart="12sp"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
@@ -62,7 +62,18 @@
                     android:background="@drawable/bg_stroke_primary"/>
 
                 <EditText
-                    android:id="@+id/inputHp"
+                    android:id="@+id/txtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bg_stroke_primary"
+                    android:hint="Password"
+                    android:paddingStart="12sp"
+                    android:textColorHint="@color/primary"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/txtNoHp"
                     android:paddingStart="12sp"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
@@ -73,7 +84,7 @@
                     android:background="@drawable/bg_stroke_primary"/>
 
                 <EditText
-                    android:id="@+id/inputEmail"
+                    android:id="@+id/txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:paddingStart="12sp"

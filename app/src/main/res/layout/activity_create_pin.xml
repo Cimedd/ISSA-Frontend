@@ -22,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Password"
+        android:text="Create Pin"
         android:textColor="@color/primary"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -31,9 +31,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:text="Lengkapi pin untuk menyelesaikan"
         android:textColor="@color/primary"
-        android:textSize="14sp"
-        android:text="Lengkapi password untuk menyelesaikan"/>
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,27 +44,27 @@
 
 
         <EditText
-            android:id="@+id/inputPassword"
-            android:paddingStart="12sp"
+            android:id="@+id/txtPin"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginBottom="15dp"
-            android:hint="Password"
+            android:background="@drawable/bg_stroke_primary"
+            android:hint="Pin"
             android:inputType="textPassword"
+            android:paddingStart="12sp"
             android:textColorHint="@color/primary"
-            android:textSize="14sp"
-            android:background="@drawable/bg_stroke_primary"/>
+            android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/inputConfirmPassword"
+            android:id="@+id/txtConfirmPin"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:paddingStart="12sp"
-            android:hint="Confirm Password"
+            android:background="@drawable/bg_stroke_primary"
+            android:hint="Confirm Pin"
             android:inputType="textPassword"
+            android:paddingStart="12sp"
             android:textColorHint="@color/primary"
-            android:textSize="14sp"
-            android:background="@drawable/bg_stroke_primary"/>
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -75,7 +75,7 @@
         android:layout_height="45dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/bg_primary"
-        android:text="Create Password"
+        android:text="Create Pin"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:backgroundTint="@color/primary" />
