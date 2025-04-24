@@ -31,7 +31,6 @@ class MainActivity: AppCompatActivity() {
                 R.id.notifikasi -> replaceFragmen(NotifikasiFragment())
                 R.id.setting -> replaceFragmen(SettingFragment())
                 else -> {
-
                 }
             }
             true
