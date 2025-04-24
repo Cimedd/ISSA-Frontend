@@ -1,4 +1,10 @@
 package com.example.myapplication.dataclass
 
-class DataHome {
-}
+data class DataHome(
+    val id: String,
+    val type: String,
+    val amount: Int,
+    val date: String,
+    val status: String,
+    val icon: String,
+)
