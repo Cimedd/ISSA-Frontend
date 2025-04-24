@@ -1,4 +1,9 @@
 package com.example.myapplication.dataclass
 
-class DataMenu {
-}
+data class DataMenu(
+    val id: String,
+    val title: String,
+    val type: String,
+    val background: Int,
+    val image: Int,
+)
