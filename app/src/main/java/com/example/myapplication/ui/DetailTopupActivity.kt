@@ -7,10 +7,10 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
@@ -42,59 +42,59 @@ class DetailTopupActivity : AppCompatActivity() {
             finish()
         }
 
-        requestDetailTopup(this)
+//        requestDetailTopup(this)
     }
 
-    private fun requestDetailTopup(context: Context) {
-        val id = intent.getStringExtra("id")
-        val token = sessionManager.getToken()
-        val decimalFormat = DecimalFormat("#,###")
-
-        AndroidNetworking.get("https://dompetku-api.vercel.app/api/transaction/${id}")
-            .setTag("detail withdraw")
-            .setPriority(Priority.LOW)
-            .addHeaders("Authorization", "Bearer $token")
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response topup", response.toString())
-                    val data = response.getJSONObject("data")
-                    val receiver = data.getJSONObject("receiver")
-                    val date = data.getString("createdAt")
-
-                    if(response.getString("success").equals("true")) {
-                        // format date to dd-mm-yyyy HH:mm
-                        val formatedDate = date.substring(8,10) + "-" + date.substring(5,7) + "-" + date.substring(0,4) + " " + date.substring(11,16)
-
-                        txtId.text = data.getString("reference")
-                        txtProduct.text = data.getString("product_code")
-                        txtAmount.text = "Rp " + decimalFormat.format(data.getInt("amount")).toString()
-                        txtStatus.text = data.getString("status")
-                        txtDate.text = formatedDate
-
-                        Picasso.get()
-                            .load(receiver.getString("image"))
-                            .into(photoProfile)
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    MaterialAlertDialogBuilder(this@DetailTopupActivity)
-                        .setTitle("Gagal")
-                        .setMessage(jsonObject.getString("message"))
-                        .setPositiveButton("OK") { dialog, which ->
-                            dialog.dismiss()
-                        }
-                        .show()
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(this@DetailTopupActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun requestDetailTopup(context: Context) {
+//        val id = intent.getStringExtra("id")
+//        val token = sessionManager.getToken()
+//        val decimalFormat = DecimalFormat("#,###")
+//
+//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/transaction/${id}")
+//            .setTag("detail withdraw")
+//            .setPriority(Priority.LOW)
+//            .addHeaders("Authorization", "Bearer $token")
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response topup", response.toString())
+//                    val data = response.getJSONObject("data")
+//                    val receiver = data.getJSONObject("receiver")
+//                    val date = data.getString("createdAt")
+//
+//                    if(response.getString("success").equals("true")) {
+//                        // format date to dd-mm-yyyy HH:mm
+//                        val formatedDate = date.substring(8,10) + "-" + date.substring(5,7) + "-" + date.substring(0,4) + " " + date.substring(11,16)
+//
+//                        txtId.text = data.getString("reference")
+//                        txtProduct.text = data.getString("product_code")
+//                        txtAmount.text = "Rp " + decimalFormat.format(data.getInt("amount")).toString()
+//                        txtStatus.text = data.getString("status")
+//                        txtDate.text = formatedDate
+//
+//                        Picasso.get()
+//                            .load(receiver.getString("image"))
+//                            .into(photoProfile)
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    MaterialAlertDialogBuilder(this@DetailTopupActivity)
+//                        .setTitle("Gagal")
+//                        .setMessage(jsonObject.getString("message"))
+//                        .setPositiveButton("OK") { dialog, which ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(this@DetailTopupActivity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 }

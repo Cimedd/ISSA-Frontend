@@ -7,10 +7,10 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
@@ -32,7 +32,6 @@ class DetailTransferActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail_transfer)
 
         btnBack = findViewById(R.id.btnBack)
-        photoProfile = findViewById(R.id.photoProfile)
         txtAmount = findViewById(R.id.txtAmount)
         txtSender = findViewById(R.id.txtSender)
         txtSenderPhone = findViewById(R.id.txtSenderPhone)
@@ -44,60 +43,60 @@ class DetailTransferActivity : AppCompatActivity() {
             finish()
         }
 
-        requestDetailTransfer(this)
+//        requestDetailTransfer(this)
     }
 
-    private fun requestDetailTransfer(context: Context) {
-        val id = intent.getStringExtra("id")
-        val token = sessionManager.getToken()
-        val decimalFormat = DecimalFormat("#,###")
-
-        AndroidNetworking.get("https://dompetku-api.vercel.app/api/transaction/${id}")
-            .setTag("detail deposit")
-            .setPriority(Priority.LOW)
-            .addHeaders("Authorization", "Bearer $token")
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response deposit", response.toString())
-                    val data = response.getJSONObject("data")
-                    val sender = data.getJSONObject("sender")
-                    val receiver = data.getJSONObject("receiver")
-                    val date = data.getString("createdAt")
-
-                    if(response.getString("success").equals("true")) {
-                        // format date to dd-mm-yyyy HH:mm
-                        val formatedDate = date.substring(8,10) + "-" + date.substring(5,7) + "-" + date.substring(0,4) + " " + date.substring(11,16)
-
-                        txtAmount.text = "Rp " + decimalFormat.format(data.getInt("amount")).toString()
-                        txtSender.text = receiver.getString("name")
-                        txtSenderPhone.text = receiver.getString("nohp")
-                        txtStatus.text = data.getString("status")
-                        txtDate.text = formatedDate
-
-                        Picasso.get()
-                            .load(receiver.getString("image"))
-                            .into(photoProfile)
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    MaterialAlertDialogBuilder(this@DetailTransferActivity)
-                        .setTitle("Gagal")
-                        .setMessage(jsonObject.getString("message"))
-                        .setPositiveButton("OK") { dialog, which ->
-                            dialog.dismiss()
-                        }
-                        .show()
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(this@DetailTransferActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun requestDetailTransfer(context: Context) {
+//        val id = intent.getStringExtra("id")
+//        val token = sessionManager.getToken()
+//        val decimalFormat = DecimalFormat("#,###")
+//
+//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/transaction/${id}")
+//            .setTag("detail deposit")
+//            .setPriority(Priority.LOW)
+//            .addHeaders("Authorization", "Bearer $token")
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response deposit", response.toString())
+//                    val data = response.getJSONObject("data")
+//                    val sender = data.getJSONObject("sender")
+//                    val receiver = data.getJSONObject("receiver")
+//                    val date = data.getString("createdAt")
+//
+//                    if(response.getString("success").equals("true")) {
+//                        // format date to dd-mm-yyyy HH:mm
+//                        val formatedDate = date.substring(8,10) + "-" + date.substring(5,7) + "-" + date.substring(0,4) + " " + date.substring(11,16)
+//
+//                        txtAmount.text = "Rp " + decimalFormat.format(data.getInt("amount")).toString()
+//                        txtSender.text = receiver.getString("name")
+//                        txtSenderPhone.text = receiver.getString("nohp")
+//                        txtStatus.text = data.getString("status")
+//                        txtDate.text = formatedDate
+//
+//                        Picasso.get()
+//                            .load(receiver.getString("image"))
+//                            .into(photoProfile)
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    MaterialAlertDialogBuilder(this@DetailTransferActivity)
+//                        .setTitle("Gagal")
+//                        .setMessage(jsonObject.getString("message"))
+//                        .setPositiveButton("OK") { dialog, which ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(this@DetailTransferActivity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 }

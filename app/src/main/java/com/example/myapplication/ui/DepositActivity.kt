@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
@@ -100,7 +100,7 @@ class DepositActivity : AppCompatActivity() {
                 editAmount.requestFocus()
                 return@setOnClickListener
             } else {
-                requestDeposit(code, editAmount.text.toString())
+//                requestDeposit(code, editAmount.text.toString())
             }
         }
     }
@@ -117,47 +117,47 @@ class DepositActivity : AppCompatActivity() {
         editAmount.setText(amount)
     }
 
-    private fun requestDeposit(method: String?, amount: String) {
-        val token = sessionManager.getToken()
-
-        AndroidNetworking.post("https://dompetku-api.vercel.app/api/transaction/deposit")
-            .setTag("deposit")
-            .setPriority(Priority.MEDIUM)
-            .addBodyParameter("method", method)
-            .addBodyParameter("amount", amount)
-            .addHeaders("Authorization", "Bearer $token")
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response deposit", response.toString())
-                    val data = response.getJSONObject("data")
-
-                    if(response.getString("success").equals("true")) {
-                        val intent = Intent(this@DepositActivity, CheckOutActivity::class.java)
-                        intent.putExtra("id", data.getString("_id"))
-                        intent.putExtra("reference", data.getString("reference"))
-                        intent.putExtra("merchant_ref", data.getString("merchant_ref"))
-                        startActivity(intent)
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    MaterialAlertDialogBuilder(this@DepositActivity)
-                        .setTitle("Gagal")
-                        .setMessage(jsonObject.getString("message"))
-                        .setPositiveButton("OK") { dialog, which ->
-                            dialog.dismiss()
-                        }
-                        .show()
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(this@DepositActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun requestDeposit(method: String?, amount: String) {
+//        val token = sessionManager.getToken()
+//
+//        AndroidNetworking.post("https://dompetku-api.vercel.app/api/transaction/deposit")
+//            .setTag("deposit")
+//            .setPriority(Priority.MEDIUM)
+//            .addBodyParameter("method", method)
+//            .addBodyParameter("amount", amount)
+//            .addHeaders("Authorization", "Bearer $token")
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response deposit", response.toString())
+//                    val data = response.getJSONObject("data")
+//
+//                    if(response.getString("success").equals("true")) {
+//                        val intent = Intent(this@DepositActivity, CheckOutActivity::class.java)
+//                        intent.putExtra("id", data.getString("_id"))
+//                        intent.putExtra("reference", data.getString("reference"))
+//                        intent.putExtra("merchant_ref", data.getString("merchant_ref"))
+//                        startActivity(intent)
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    MaterialAlertDialogBuilder(this@DepositActivity)
+//                        .setTitle("Gagal")
+//                        .setMessage(jsonObject.getString("message"))
+//                        .setPositiveButton("OK") { dialog, which ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(this@DepositActivity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 }

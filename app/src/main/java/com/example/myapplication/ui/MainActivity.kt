@@ -16,8 +16,8 @@ class MainActivity: AppCompatActivity() {
     private lateinit var bottomNav : BottomNavigationView
     private lateinit var fragment : FragmentContainerView
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         bottomNav = findViewById(R.id.bottomNavigation)

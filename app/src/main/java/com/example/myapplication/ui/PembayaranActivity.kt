@@ -9,10 +9,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
@@ -39,7 +39,7 @@ class PembayaranActivity : AppCompatActivity() {
         txtKet = findViewById(R.id.txtKet)
         txtHelper = findViewById(R.id.txtHelper)
 
-        getSaldo()
+//        getSaldo()
 
         val type = intent.getStringExtra("type")
         if(type.equals("data") || type.equals("pulsa") || type.equals("etoll")) {
@@ -63,13 +63,13 @@ class PembayaranActivity : AppCompatActivity() {
                 editReceiver.requestFocus()
                 return@setOnClickListener
             } else {
-                requestTopup(code, receiver, this)
+//                requestTopup(code, receiver, this)
             }
 
         }
     }
 
-    private fun requestTopup(code: String, receiver: String, context: Context) {
+    /*private fun requestTopup(code: String, receiver: String, context: Context) {
         val token = sessionManager.getToken()
 
         AndroidNetworking.post("https://dompetku-api.vercel.app/api/transaction/topup")
@@ -142,5 +142,5 @@ class PembayaranActivity : AppCompatActivity() {
                     Log.d("error", error.toString())
                 }
             })
-    }
+    }*/
 }

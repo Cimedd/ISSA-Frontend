@@ -8,10 +8,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
@@ -54,7 +54,7 @@ class Transfer2Activity : AppCompatActivity() {
         btnLanjut = findViewById(R.id.btnLanjut)
 
         val phone = intent.getStringExtra("nohp").toString()
-        getUser(phone)
+//        getUser(phone)
 
         btnBack.setOnClickListener {
             finish()
@@ -127,48 +127,48 @@ class Transfer2Activity : AppCompatActivity() {
         }
     }
 
-    private fun getUser(phone: String) {
-        val token = sessionManager.getToken()
-
-        AndroidNetworking.get("https://dompetku-api.vercel.app/api/user/phone/${phone}")
-            .addHeaders("Authorization", "Bearer $token")
-            .setTag("recents")
-            .setPriority(Priority.LOW)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response detail", response.toString())
-                    val data: JSONObject = response.getJSONObject("data")
-
-                    if(response.getString("success").equals("true")) {
-                        Picasso.get()
-                            .load(data.getString("image"))
-                            .into(photoProfile)
-
-                        txtName.text = data.getString("name")
-                        txtHp.text = data.getString("nohp")
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    MaterialAlertDialogBuilder(this@Transfer2Activity)
-                        .setTitle("Gagal")
-                        .setMessage(jsonObject.getString("message"))
-                        .setPositiveButton("OK") { dialog, which ->
-                            dialog.dismiss()
-                        }
-                        .show()
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(this@Transfer2Activity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun getUser(phone: String) {
+//        val token = sessionManager.getToken()
+//
+//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/user/phone/${phone}")
+//            .addHeaders("Authorization", "Bearer $token")
+//            .setTag("recents")
+//            .setPriority(Priority.LOW)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response detail", response.toString())
+//                    val data: JSONObject = response.getJSONObject("data")
+//
+//                    if(response.getString("success").equals("true")) {
+//                        Picasso.get()
+//                            .load(data.getString("image"))
+//                            .into(photoProfile)
+//
+//                        txtName.text = data.getString("name")
+//                        txtHp.text = data.getString("nohp")
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    MaterialAlertDialogBuilder(this@Transfer2Activity)
+//                        .setTitle("Gagal")
+//                        .setMessage(jsonObject.getString("message"))
+//                        .setPositiveButton("OK") { dialog, which ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(this@Transfer2Activity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 
     private fun setAmount(amount: String) {
         editAmount.setText(amount)

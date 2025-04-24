@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.ui.LoginActivity
 import com.example.myapplication.R
 import com.example.myapplication.ui.SessionManager
@@ -44,62 +44,62 @@ class NotifikasiFragment : Fragment() {
         shimmer = view.findViewById(R.id.shimmer)
         swipe = view.findViewById(R.id.swipe)
 
-        getNotifications()
+//        getNotifications()
         swipe.setOnRefreshListener {
             dataNotifikasi.clear()
-            getNotifications()
+//            getNotifications()
             swipe.isRefreshing = false
         }
 
         return view
     }
 
-    private fun getNotifications() {
-        startShimmer()
-        val token = sessionManager.getToken()
-
-        AndroidNetworking.get("https://dompetku-api.vercel.app/api/notification")
-            .addHeaders("Authorization", "Bearer $token")
-            .setTag("notification")
-            .setPriority(Priority.LOW)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response", response.toString())
-                    val data: JSONArray = response.getJSONArray("data")
-                    if(response.getString("success").equals("true")) {
-                        for (i in 0 until data.length()) {
-                            val item = data.getJSONObject(i)
-                            dataNotifikasi.add(
-                                DataNotifikasi(
-                                    item.getString("_id"),
-                                    item.getString("user_id"),
-                                    item.getString("receiver_id"),
-                                    item.getString("title"),
-                                    item.getString("desc"),
-                                    item.getString("createdAt")
-                                )
-                            )
-
-                            recyclerView.layoutManager = LinearLayoutManager(activity)
-                            recyclerView.adapter = activity?.let { AdapterNotifikasi(it, dataNotifikasi) }
-                        }
-
-                        stopShimmer()
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(activity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun getNotifications() {
+//        startShimmer()
+//        val token = sessionManager.getToken()
+//
+//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/notification")
+//            .addHeaders("Authorization", "Bearer $token")
+//            .setTag("notification")
+//            .setPriority(Priority.LOW)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response", response.toString())
+//                    val data: JSONArray = response.getJSONArray("data")
+//                    if(response.getString("success").equals("true")) {
+//                        for (i in 0 until data.length()) {
+//                            val item = data.getJSONObject(i)
+//                            dataNotifikasi.add(
+//                                DataNotifikasi(
+//                                    item.getString("_id"),
+//                                    item.getString("user_id"),
+//                                    item.getString("receiver_id"),
+//                                    item.getString("title"),
+//                                    item.getString("desc"),
+//                                    item.getString("createdAt")
+//                                )
+//                            )
+//
+//                            recyclerView.layoutManager = LinearLayoutManager(activity)
+//                            recyclerView.adapter = activity?.let { AdapterNotifikasi(it, dataNotifikasi) }
+//                        }
+//
+//                        stopShimmer()
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(activity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 
     private fun startShimmer() {
         shimmer.visibility = View.VISIBLE

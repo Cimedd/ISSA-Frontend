@@ -14,10 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.*
 import com.example.myapplication.ui.adapter.AdapterHome
 import com.example.myapplication.ui.adapter.AdapterMenu
@@ -94,12 +94,12 @@ class HomeFragment: Fragment() {
 
         swipe.setOnRefreshListener {
             dataHome.clear()
-            getData()
+//            getData()
             swipe.isRefreshing = false
         }
 
         generateMenus()
-        getData()
+//        getData()
         return view
     }
 
@@ -116,42 +116,42 @@ class HomeFragment: Fragment() {
     }
 
 
-    private fun getData() {
-        startShimmer()
-        val token = sessionManager.getToken()
-
-        AndroidNetworking.get("https://dompetku-api.vercel.app/api/user/getprofile")
-            .addHeaders("Authorization", "Bearer $token")
-            .setTag("profile")
-            .setPriority(Priority.LOW)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response", response.toString())
-
-                    val getJsonObject: JSONObject = response.getJSONObject("data")
-                    val user = getJsonObject.getJSONObject("user")
-                    val transactions = getJsonObject.getJSONArray("transactions")
-
-                    if(response.getString("success").equals("true")) {
-                        setProfile(user)
-                        setTransactions(transactions)
-
-                        stopShimmer()
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(activity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun getData() {
+//        startShimmer()
+//        val token = sessionManager.getToken()
+//
+//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/user/getprofile")
+//            .addHeaders("Authorization", "Bearer $token")
+//            .setTag("profile")
+//            .setPriority(Priority.LOW)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response", response.toString())
+//
+//                    val getJsonObject: JSONObject = response.getJSONObject("data")
+//                    val user = getJsonObject.getJSONObject("user")
+//                    val transactions = getJsonObject.getJSONArray("transactions")
+//
+//                    if(response.getString("success").equals("true")) {
+//                        setProfile(user)
+//                        setTransactions(transactions)
+//
+//                        stopShimmer()
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(activity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 
     private fun setProfile(user: JSONObject) {
         val decimalFormat = DecimalFormat("#,###")

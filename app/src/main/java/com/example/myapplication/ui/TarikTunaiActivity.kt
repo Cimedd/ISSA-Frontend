@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
@@ -49,7 +49,7 @@ class TarikTunaiActivity : AppCompatActivity() {
         metodeName.text = metode["name"]
         Picasso.get().load(metode["icon"]).into(metodeIcon)
 
-        getSaldo()
+//        getSaldo()
 
         btnMethod = findViewById(R.id.btnMethod)
         btnBack = findViewById(R.id.btnBack)
@@ -135,47 +135,47 @@ class TarikTunaiActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSaldo() {
-        val token = sessionManager.getToken()
-
-        AndroidNetworking.get("https://dompetku-api.vercel.app/api/user/getprofile")
-            .addHeaders("Authorization", "Bearer $token")
-            .setTag("profile")
-            .setPriority(Priority.LOW)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response", response.toString())
-
-                    val getJsonObject: JSONObject = response.getJSONObject("data")
-                    val user = getJsonObject.getJSONObject("user")
-
-                    if(response.getString("success").equals("true")) {
-                        val decimalFormat = DecimalFormat("#,###")
-                        txtSaldo.text = decimalFormat.format(user.getInt("saldo")).toString()
-
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    MaterialAlertDialogBuilder(this@TarikTunaiActivity)
-                        .setTitle("Gagal")
-                        .setMessage(jsonObject.getString("message"))
-                        .setPositiveButton("OK") { dialog, which ->
-                            dialog.dismiss()
-                        }
-                        .show()
-
-                    if(jsonObject.getString("code").equals("401")) {
-                        val intent = Intent(this@TarikTunaiActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            })
-    }
+//    private fun getSaldo() {
+//        val token = sessionManager.getToken()
+//
+//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/user/getprofile")
+//            .addHeaders("Authorization", "Bearer $token")
+//            .setTag("profile")
+//            .setPriority(Priority.LOW)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response", response.toString())
+//
+//                    val getJsonObject: JSONObject = response.getJSONObject("data")
+//                    val user = getJsonObject.getJSONObject("user")
+//
+//                    if(response.getString("success").equals("true")) {
+//                        val decimalFormat = DecimalFormat("#,###")
+//                        txtSaldo.text = decimalFormat.format(user.getInt("saldo")).toString()
+//
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    MaterialAlertDialogBuilder(this@TarikTunaiActivity)
+//                        .setTitle("Gagal")
+//                        .setMessage(jsonObject.getString("message"))
+//                        .setPositiveButton("OK") { dialog, which ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//
+//                    if(jsonObject.getString("code").equals("401")) {
+//                        val intent = Intent(this@TarikTunaiActivity, LoginActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            })
+//    }
 
     override fun onResume() {
         super.onResume()

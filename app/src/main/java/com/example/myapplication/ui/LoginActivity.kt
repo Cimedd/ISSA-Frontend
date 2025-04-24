@@ -7,10 +7,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.JSONObjectRequestListener
+//import com.androidnetworking.AndroidNetworking
+//import com.androidnetworking.common.Priority
+//import com.androidnetworking.error.ANError
+//import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
@@ -47,44 +47,44 @@ class LoginActivity : AppCompatActivity() {
                 inputPassword.error = "Password tidak boleh kosong"
                 inputPassword.requestFocus()
             } else {
-                login(hp, password)
+//                login(hp, password)
             }
         }
     }
 
-    private fun login(nohp: String, password: String) {
-        sessionManager = SessionManager(this)
-        AndroidNetworking.post("https://dompetku-api.vercel.app/api/auth/login")
-            .setTag("register")
-            .setPriority(Priority.MEDIUM)
-            .addBodyParameter("password", password)
-            .addBodyParameter("nohp", nohp)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject) {
-                    Log.d("response", response.toString())
-                    val getJsonObject: JSONObject = response.getJSONObject("data")
-                    if(response.getString("success").equals("true")) {
-                        val token = getJsonObject.getString("token")
-                        sessionManager.setToken(token)
-                        sessionManager.setLogin(true)
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-
-                override fun onError(error: ANError) {
-                    val error = error.errorBody
-                    val jsonObject = JSONObject(error)
-
-                    MaterialAlertDialogBuilder(this@LoginActivity)
-                        .setTitle("Login Gagal")
-                        .setMessage(jsonObject.getString("message"))
-                        .setPositiveButton("OK") { dialog, which ->
-                            dialog.dismiss()
-                        }
-                        .show()
-                }
-            })
-    }
+//    private fun login(nohp: String, password: String) {
+//        sessionManager = SessionManager(this)
+//        AndroidNetworking.post("https://dompetku-api.vercel.app/api/auth/login")
+//            .setTag("register")
+//            .setPriority(Priority.MEDIUM)
+//            .addBodyParameter("password", password)
+//            .addBodyParameter("nohp", nohp)
+//            .build()
+//            .getAsJSONObject(object : JSONObjectRequestListener {
+//                override fun onResponse(response: JSONObject) {
+//                    Log.d("response", response.toString())
+//                    val getJsonObject: JSONObject = response.getJSONObject("data")
+//                    if(response.getString("success").equals("true")) {
+//                        val token = getJsonObject.getString("token")
+//                        sessionManager.setToken(token)
+//                        sessionManager.setLogin(true)
+//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//
+//                override fun onError(error: ANError) {
+//                    val error = error.errorBody
+//                    val jsonObject = JSONObject(error)
+//
+//                    MaterialAlertDialogBuilder(this@LoginActivity)
+//                        .setTitle("Login Gagal")
+//                        .setMessage(jsonObject.getString("message"))
+//                        .setPositiveButton("OK") { dialog, which ->
+//                            dialog.dismiss()
+//                        }
+//                        .show()
+//                }
+//            })
+//    }
 }

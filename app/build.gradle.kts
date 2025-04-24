@@ -47,7 +47,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.0")
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
-    implementation("com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.2")
+//    implementation("com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.2")
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 }
