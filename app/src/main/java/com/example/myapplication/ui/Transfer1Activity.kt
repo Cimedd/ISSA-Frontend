@@ -7,7 +7,9 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.SearchView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 //import com.androidnetworking.AndroidNetworking
@@ -17,6 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ui.adapter.AdapterRecentUser
 import com.example.myapplication.dataclass.DataRecentUser
 import com.example.myapplication.R
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONArray
 import org.json.JSONObject
@@ -29,6 +34,10 @@ class Transfer1Activity : AppCompatActivity() {
     private lateinit var btnLanjut: Button
     private lateinit var editHp: SearchView
 
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transfer1)
@@ -38,7 +47,15 @@ class Transfer1Activity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerRecent)
         editHp = findViewById(R.id.editHp)
 
-//        getRecents(this)
+        homeVM.getContact()
+
+        homeVM.contact.observe(this){
+            when(it){
+                is Result.Error -> TODO()
+                Result.Loading -> TODO()
+                is Result.Success -> TODO()
+            }
+        }
 
         btnLanjut = findViewById(R.id.btnLanjut)
         btnLanjut.setOnClickListener {

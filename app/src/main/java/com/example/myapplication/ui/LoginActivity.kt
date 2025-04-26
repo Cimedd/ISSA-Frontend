@@ -6,13 +6,21 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
@@ -21,11 +29,19 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var btnRegister: TextView
     private lateinit var sessionManager: SessionManager
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        lifecycleScope.launch {
+           if(settingVM.checkUser()){
+               moveToMain()
+           }
+        }
         inputHp = findViewById(R.id.txtNoHp)
         inputPassword = findViewById(R.id.txtPin)
         btnRegister = findViewById(R.id.btnRegister)
@@ -47,44 +63,43 @@ class LoginActivity : AppCompatActivity() {
                 inputPassword.error = "Password tidak boleh kosong"
                 inputPassword.requestFocus()
             } else {
-//                login(hp, password)
+                settingVM.login(inputHp.text.toString(),inputPassword.text.toString()).observe(this){
+                    when(it){
+                        is Result.Error -> {
+                            val alertDialogBuilder = AlertDialog.Builder(this)
+                            if (it.error == ""){
+                                alertDialogBuilder.setTitle("Register Successful")
+                                alertDialogBuilder.setMessage("Check your email to verify the account")
+                                alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                                   lifecycleScope.launch {
+                                       settingVM.sendVerif(inputHp.text.toString())
+                                   }
+                                }
+                                val alertDialog = alertDialogBuilder.create()
+                                alertDialog.show()
+                            }
+                            else{
+                                showToast(it.error)
+                            }
+                        }
+                        Result.Loading -> {
+                            
+                        }
+                        is Result.Success -> {
+                           moveToMain()
+                        }
+                    }
+                }
             }
         }
     }
+    private fun showToast(text : String){
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
 
-//    private fun login(nohp: String, password: String) {
-//        sessionManager = SessionManager(this)
-//        AndroidNetworking.post("https://dompetku-api.vercel.app/api/auth/login")
-//            .setTag("register")
-//            .setPriority(Priority.MEDIUM)
-//            .addBodyParameter("password", password)
-//            .addBodyParameter("nohp", nohp)
-//            .build()
-//            .getAsJSONObject(object : JSONObjectRequestListener {
-//                override fun onResponse(response: JSONObject) {
-//                    Log.d("response", response.toString())
-//                    val getJsonObject: JSONObject = response.getJSONObject("data")
-//                    if(response.getString("success").equals("true")) {
-//                        val token = getJsonObject.getString("token")
-//                        sessionManager.setToken(token)
-//                        sessionManager.setLogin(true)
-//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-//                        startActivity(intent)
-//                    }
-//                }
-//
-//                override fun onError(error: ANError) {
-//                    val error = error.errorBody
-//                    val jsonObject = JSONObject(error)
-//
-//                    MaterialAlertDialogBuilder(this@LoginActivity)
-//                        .setTitle("Login Gagal")
-//                        .setMessage(jsonObject.getString("message"))
-//                        .setPositiveButton("OK") { dialog, which ->
-//                            dialog.dismiss()
-//                        }
-//                        .show()
-//                }
-//            })
-//    }
+    private fun moveToMain(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 }

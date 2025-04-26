@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
 import com.example.myapplication.dataclass.DataRiwayat
+import com.example.myapplication.dataclass.DataTransaction
 import com.example.myapplication.ui.CheckOutActivity
 import com.example.myapplication.ui.DetailTopupActivity
 import com.example.myapplication.ui.DetailTransferActivity
@@ -22,7 +23,7 @@ import java.text.DecimalFormat
 
 @SuppressLint("RecyclerView")
 
-class AdapterRiwayat(val context: Context, val riwayatList: ArrayList<DataRiwayat>): RecyclerView.Adapter<AdapterRiwayat.MyViewHolder>() {
+class AdapterRiwayat(val context: Context, val riwayatList: List<DataTransaction>,val id : String): RecyclerView.Adapter<AdapterRiwayat.MyViewHolder>() {
     private lateinit var sessionManager : SessionManager
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -31,12 +32,11 @@ class AdapterRiwayat(val context: Context, val riwayatList: ArrayList<DataRiwaya
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        sessionManager = SessionManager(context)
         val currentItem = riwayatList[position]
         val decimalFormat = DecimalFormat("#,###")
 
         // format date to dd-mm-yyyy HH:mm
-        val date = currentItem.date.substring(8,10) + "-" + currentItem.date.substring(5,7) + "-" + currentItem.date.substring(0,4) + " " + currentItem.date.substring(11,16)
+        val date = currentItem.createdAt;
 
         holder.txtType.text = currentItem.type
         holder.txtAmount.text = "Rp " + decimalFormat.format(currentItem.amount).toString()
@@ -44,9 +44,9 @@ class AdapterRiwayat(val context: Context, val riwayatList: ArrayList<DataRiwaya
         holder.txtStatus.text = currentItem.status
 
         // load icon
-        Picasso.get()
-            .load(currentItem.icon)
-            .into(holder.icon)
+//        Picasso.get()
+//            .load(currentItem.icon)
+//            .into(holder.icon)
 
         // check if status is success
         when(currentItem.status) {
@@ -57,21 +57,31 @@ class AdapterRiwayat(val context: Context, val riwayatList: ArrayList<DataRiwaya
 
         holder.itemView.setOnClickListener {
             if(currentItem.type == "Deposit") {
+                holder.icon.setImageResource(R.drawable.deposit2)
                 val intent = Intent(context, CheckOutActivity::class.java)
                 intent.putExtra("id", currentItem.id)
                 startActivity(context, intent, null)
             }
             else if(currentItem.type == "Transfer") {
+                if (currentItem.userID.toString() != id){
+                    holder.icon.setImageResource(R.drawable.ic_uang_masuk)
+                }
+                else{
+                    holder.icon.setImageResource(R.drawable.ic_uang_keluar)
+                }
+
                 val intent = Intent(context, DetailTransferActivity::class.java)
                 intent.putExtra("id", currentItem.id)
                 startActivity(context, intent, null)
             }
             else if(currentItem.type == "Withdraw") {
+                holder.icon.setImageResource(R.drawable.withdraw2)
                 val intent = Intent(context, DetailWithdrawActivity::class.java)
                 intent.putExtra("id", currentItem.id)
                 startActivity(context, intent, null)
             }
             else if(currentItem.type == "Topup") {
+                holder.icon.setImageResource(R.drawable.voucher)
                 val intent = Intent(context, DetailTopupActivity::class.java)
                 intent.putExtra("id", currentItem.id)
                 startActivity(context, intent, null)

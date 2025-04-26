@@ -9,13 +9,13 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class SettingPref private constructor(private val dataStore: DataStore<Preferences>) {
     private val userId = stringPreferencesKey("id")
     private val token = stringPreferencesKey("token")
-    private val name = stringPreferencesKey("name")
+    private val name = stringPreferencesKey(
+        "name")
 
     fun getUser(): Flow<String> {
         return dataStore.data.map { preferences ->
@@ -24,7 +24,7 @@ class SettingPref private constructor(private val dataStore: DataStore<Preferenc
     }
 
     suspend fun loggedIn(user : String, tokens: String, names : String){
-        dataStore.edit { preferences ->
+        dataStore.edit { preferences  ->
             preferences[userId] = user
             preferences[token] = tokens
             preferences[name] = names
@@ -39,6 +39,18 @@ class SettingPref private constructor(private val dataStore: DataStore<Preferenc
         }
     }
 
+    fun checkUser():Flow<String>{
+        return dataStore.data.map { preferences ->
+            preferences[token] ?: ""
+        }
+    }
+
+
+    fun getName():Flow<String>{
+        return dataStore.data.map { preferences ->
+            preferences[userId] ?: ""
+        }
+    }
     companion object {
         @Volatile
         private var INSTANCE: SettingPref? = null

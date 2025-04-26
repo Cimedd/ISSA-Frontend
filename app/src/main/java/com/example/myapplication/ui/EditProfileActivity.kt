@@ -7,12 +7,19 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RadioGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -27,7 +34,9 @@ class EditProfilActivity : AppCompatActivity() {
     private lateinit var radioGroup : RadioGroup
     private lateinit var idUser : String
     private lateinit var btnBack : ImageView
-
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +55,18 @@ class EditProfilActivity : AppCompatActivity() {
             finish()
         }
 
+
+        homeVM.getUser().observe(this){
+            when(it){
+                is Result.Error -> {}
+                Result.Loading -> {}
+                is Result.Success -> {
+                    editName.setText(it.data.name)
+                    editNomor.setText(it.data.phoneNumber)
+                    editEmail.setText(it.data.email)
+                }
+            }
+        }
         btnSimpan.setOnClickListener{
             val name = editName.text.toString().trim()
             val hp = editNomor.text.toString().trim()

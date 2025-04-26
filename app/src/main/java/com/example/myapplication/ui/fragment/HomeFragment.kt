@@ -10,7 +10,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -23,12 +26,20 @@ import com.example.myapplication.ui.adapter.AdapterHome
 import com.example.myapplication.ui.adapter.AdapterMenu
 import com.example.myapplication.dataclass.DataHome
 import com.example.myapplication.dataclass.DataMenu
+import com.example.myapplication.network.Result
 import com.example.myapplication.ui.DepositActivity
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.ui.TarikTunaiActivity
 import com.example.myapplication.ui.Transfer1Activity
+import com.example.myapplication.ui.adapter.AdapterRiwayat
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
+import com.example.myapplication.util.Utility
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
@@ -51,6 +62,15 @@ class HomeFragment: Fragment() {
     private lateinit var home: LinearLayout
     private lateinit var welcome: RelativeLayout
     private lateinit var swipe: SwipeRefreshLayout
+    private lateinit var userID : String
+
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(requireActivity())
+    }
+
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(requireActivity())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,6 +94,31 @@ class HomeFragment: Fragment() {
         welcome = view.findViewById(R.id.welcome)
         swipe = view.findViewById(R.id.swipe)
 
+        lifecycleScope.launch {
+            userID = settingVM.getUser()
+        }
+
+        homeVM.getUser().observe(requireActivity()){
+            when(it){
+                is Result.Error -> {
+                    stopShimmer()
+                    txtName.text = "Halo, " + "!"
+                    txtSaldo.text = Utility.moneyFormat(0)
+                }
+                Result.Loading -> {
+                    startShimmer()
+                    txtName.text = "Halo, " + "!"
+                    txtSaldo.text = Utility.moneyFormat(0)
+                }
+
+                is Result.Success -> {
+                    stopShimmer()
+                    txtName.text =  "Halo, " + it.data.name + "!"
+                    txtSaldo.text = Utility.moneyFormat(it.data.saldo)
+                }
+            }
+        }
+
         btnDeposit = view.findViewById(R.id.btnDeposit)
         btnDeposit.setOnClickListener {
             val intent = Intent(activity, DepositActivity::class.java)
@@ -94,13 +139,33 @@ class HomeFragment: Fragment() {
 
         swipe.setOnRefreshListener {
             dataHome.clear()
-//            getData()
             swipe.isRefreshing = false
+        }
+
+        recyclerMenu.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+
+        homeVM.getHistory().observe(requireActivity()){
+            when(it){
+                is Result.Error -> {
+
+                }
+                Result.Loading ->{
+
+                }
+                is Result.Success -> {
+                    recyclerMenu.adapter = AdapterRiwayat(requireActivity(), it.data.take(3), userID)
+                }
+            }
         }
 
         generateMenus()
 //        getData()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
     private fun generateMenus() {
@@ -153,17 +218,7 @@ class HomeFragment: Fragment() {
 //            })
 //    }
 
-    private fun setProfile(user: JSONObject) {
-        val decimalFormat = DecimalFormat("#,###")
 
-        txtName.text = "Halo, " + user.getString("name") + "!"
-        txtSaldo.text = decimalFormat.format(user.getInt("saldo")).toString()
-
-        // load image
-        Picasso.get()
-            .load(user.getString("image"))
-            .into(photoProfile)
-    }
 
     private fun setTransactions(transactions: JSONArray) {
         for (i in 0 until transactions.length()) {

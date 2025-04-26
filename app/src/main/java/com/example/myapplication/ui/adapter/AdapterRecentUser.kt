@@ -11,14 +11,16 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataContact
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.ui.Transfer2Activity
 import com.example.myapplication.dataclass.DataRecentUser
+import com.example.myapplication.dataclass.DataUser
 import com.squareup.picasso.Picasso
 
 @SuppressLint("RecyclerView")
 
-class AdapterRecentUser(val context: Context, val userList: ArrayList<DataRecentUser>): RecyclerView.Adapter<AdapterRecentUser.MyViewHolder>() {
+class AdapterRecentUser(val context: Context, val userList: List<DataContact>): RecyclerView.Adapter<AdapterRecentUser.MyViewHolder>() {
     private lateinit var sessionManager : SessionManager
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -34,14 +36,14 @@ class AdapterRecentUser(val context: Context, val userList: ArrayList<DataRecent
 
         // load icon
         Picasso.get()
-            .load(currentItem.image)
+            .load("https://i.pravatar.cc/300")
             .into(holder.photoProfile)
 
         // on click
         holder.itemView.setOnClickListener {
             val intent = Intent(context, Transfer2Activity::class.java)
-            intent.putExtra("nohp", currentItem.nohp)
-
+            intent.putExtra("nohp", currentItem.phoneNumber)
+            intent.putExtra("id", currentItem.id);
             startActivity(context, intent, null)
         }
     }

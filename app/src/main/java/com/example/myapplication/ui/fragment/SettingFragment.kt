@@ -12,6 +12,8 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
@@ -22,8 +24,11 @@ import com.example.myapplication.ui.EditProfilActivity
 import com.example.myapplication.ui.LoginActivity
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.ui.TentangKamiActivity
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.text.DecimalFormat
 
@@ -43,6 +48,10 @@ class SettingFragment : Fragment() {
     private lateinit var profile: LinearLayout
     private lateinit var stats: RelativeLayout
     private lateinit var swipe: SwipeRefreshLayout
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(requireActivity())
+    }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -86,8 +95,11 @@ class SettingFragment : Fragment() {
             val intent = Intent(activity, TentangKamiActivity::class.java)
             startActivity(intent)
         }
+
         btnLogout.setOnClickListener {
-            sessionManager.removeData()
+            lifecycleScope.launch {
+                settingVM.logout()
+            }
             val intent = Intent(activity, LoginActivity::class.java)
             startActivity(intent)
         }

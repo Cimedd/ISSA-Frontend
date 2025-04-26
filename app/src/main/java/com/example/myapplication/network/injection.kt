@@ -10,12 +10,12 @@ object injection {
         val pref = SettingPref.getInstance(context.dataStore)
         val user = runBlocking { pref.getUser().firstOrNull() }
         val apiService = ApiConfig.getApiService(user.toString())
-        return ApiRepo(apiService,pref)
+        return ApiRepo(apiService)
     }
 
-    fun provideSetting(context : Context) : ApiRepo{
+    fun provideSetting(context : Context) : SettingRepo{
         val pref = SettingPref.getInstance(context.dataStore)
         val apiService = ApiConfig.getApiService("")
-        return ApiRepo(apiService,pref)
+        return SettingRepo(apiService,pref)
     }
 }

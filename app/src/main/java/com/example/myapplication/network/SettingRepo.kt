@@ -1,18 +1,45 @@
 package com.example.myapplication.network
 
+import kotlinx.coroutines.flow.firstOrNull
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+
 class SettingRepo(private val api: ApiService, private val settingPref: SettingPref) {
 
-    suspend fun login(email : String, password : String){
+    suspend fun login(email : String, password : String): ResponseLogin{
         val body = mapOf("email" to email, "password" to password)
-        api.login(body)
+        return api.login(body)
     }
 
-    suspend fun register(name: String, email : String, password : String, phone : String){
+    suspend fun register(name: String, email : String, password : String, phone : String): ResponseStatus{
         val body = mapOf("name" to name, "email" to email, "password" to password, "phone_number" to phone)
-        api.register(body)
+        return api.register(body)
     }
 
     suspend fun logout(){
+        api.logout();
+    }
 
+    suspend fun getID() : String{
+        return settingPref.getUser().firstOrNull() ?: ""
+    }
+
+    suspend fun saveToDataStore(uid: String, name: String, url: String){
+        settingPref.loggedIn(uid, name, url)
+    }
+
+    suspend fun checkUser(): Boolean {
+        val token = settingPref.checkUser().firstOrNull()
+        return token != ""
+    }
+
+    suspend fun getUser(): String {
+        return settingPref.checkUser().firstOrNull() ?: ""
+    }
+
+    suspend fun sendVerif(email :String): ResponseStatus{
+        val body = email.toRequestBody("text/plain".toMediaType())
+        return api.sendVerification(body)
     }
 }

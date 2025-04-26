@@ -12,7 +12,7 @@ interface ApiService {
     suspend fun register(@Body request: Map<String,String>): ResponseStatus
 
     @POST("login")
-    suspend fun login(@Body request: Map<String,String>): ResponseStatus
+    suspend fun login(@Body request: Map<String,String>): ResponseLogin
 
     @POST("resend-verification")
     suspend fun sendVerification(@Part("email") email : RequestBody) : ResponseStatus
@@ -20,8 +20,14 @@ interface ApiService {
     @POST("logout")
     suspend fun logout() : ResponseStatus
 
+    @GET("users")
+    suspend fun getHomeData() : ResponseUser
+
     @GET("transactions")
     suspend fun getAllTransaction() : ResponseTransaction
+
+    @POST("transactions")
+    suspend fun makeTransaction(@Body request: Map<String,String?>) : ResponseStatus
 
     @GET("providers/{id}")
     suspend fun getProvider(@Path("id") uid: Int) : ResponseProvider
@@ -32,6 +38,8 @@ interface ApiService {
     @GET("contacts")
     suspend fun getContact() : ResponseContact
 
-    @GET("contacts/{phone}")
-    suspend fun searchContact(@Path("phone") phone : String) : ResponseContact
+    @GET("contacts/{phone_number}")
+    suspend fun searchContact(@Path("phone_number") phone : String) : ResponseContact
+
+
 }

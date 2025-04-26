@@ -9,8 +9,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var btnLogin: TextView
@@ -18,6 +24,9 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var inputEmail: EditText
     private lateinit var inputHp: EditText
     private lateinit var btnNext: Button
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,23 +54,34 @@ class RegisterActivity : AppCompatActivity() {
                 inputHp.error = "No HP tidak boleh kosong"
                 inputHp.requestFocus()
             } else {
-                nextStep()
+                val nama = inputNama.text.toString().trim()
+                val email = inputEmail.text.toString().trim()
+                val hp = inputHp.text.toString().trim()
+
+                settingVM.register(nama,email,"",hp).observe(this){
+                    when(it){
+                        is Result.Error -> {
+                            Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()}
+                        Result.Loading -> {}
+                        is Result.Success ->{
+                            val alertDialogBuilder = AlertDialog.Builder(this)
+                            alertDialogBuilder.setTitle("Register Successful")
+                            alertDialogBuilder.setMessage("Check your email to verify the account")
+                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                                val intent = Intent(this, LoginActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                            val alertDialog = alertDialogBuilder.create()
+                            alertDialog.show()
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun nextStep() {
-        val nama = inputNama.text.toString().trim()
-        val email = inputEmail.text.toString().trim()
-        val hp = inputHp.text.toString().trim()
 
-        val bundle = Bundle()
-        bundle.putString("nama", nama)
-        bundle.putString("email", email)
-        bundle.putString("nohp", hp)
-
-        val intent = Intent(this, CreatePinActivity::class.java)
-        intent.putExtras(bundle)
-        startActivity(intent)
     }
 }
