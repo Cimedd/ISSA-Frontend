@@ -23,8 +23,11 @@ interface ApiService {
     @GET("users")
     suspend fun getHomeData() : ResponseUser
 
+    @GET("users/saldo")
+    suspend fun getSaldo() : ResponseUser
+
     @GET("transactions")
-    suspend fun getAllTransaction() : ResponseTransaction
+    suspend fun getAllTransaction() : ResponseForTransaction
 
     @POST("transactions")
     suspend fun makeTransaction(@Body request: Map<String,String?>) : ResponseStatus

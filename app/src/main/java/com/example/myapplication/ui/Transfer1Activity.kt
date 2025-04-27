@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
@@ -48,19 +49,22 @@ class Transfer1Activity : AppCompatActivity() {
         editHp = findViewById(R.id.editHp)
 
         homeVM.getContact()
-
+        
         homeVM.contact.observe(this){
             when(it){
-                is Result.Error -> TODO()
-                Result.Loading -> TODO()
-                is Result.Success -> TODO()
+                is Result.Error -> {}
+                Result.Loading -> {}
+                is Result.Success -> {
+                    recyclerView.layoutManager = LinearLayoutManager(this,)
+                    recyclerView.adapter = AdapterRecentUser(this, it.data)
+                }
             }
         }
 
         btnLanjut = findViewById(R.id.btnLanjut)
         btnLanjut.setOnClickListener {
             if (editHp.query.toString().isNotEmpty()) {
-//                checkHp(editHp.query.toString(), this)
+                homeVM.searchContact(editHp.query.toString())
             }
         }
 

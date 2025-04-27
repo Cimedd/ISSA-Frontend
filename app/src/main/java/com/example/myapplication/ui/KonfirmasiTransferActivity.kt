@@ -5,14 +5,25 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.Transaction
+import com.example.myapplication.dataclass.TransactionDetail
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.text.DecimalFormat
 
@@ -26,6 +37,10 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
     private lateinit var txtSaldo: TextView
     private lateinit var photoProfile: ImageView
     private lateinit var btnSend: TextView
+
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +59,58 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
             finish()
         }
 
+        homeVM.getSaldo().observe(this){
+            when(it){
+                is Result.Error -> {
+                    txtSaldo.text = ""
+                    btnSend.isEnabled = false
+                }
+                Result.Loading -> txtSaldo.text = "0"
+                is Result.Success -> txtSaldo.text = it.data.saldo.toString()
+            }
+        }
+        val transaction = intent.getParcelableExtra<Transaction>("transaction")
+
         val nohp = intent.getStringExtra("nohp").toString()
         val amount = intent.getStringExtra("amount").toString()
         val catatan = intent.getStringExtra("catatan").toString()
-        val decimalFormat = DecimalFormat("#,###")
 
         txtPhone.text = nohp
-        txtAmount.text = "Rp " + decimalFormat.format(amount.toBigInteger()).toString()
+        txtAmount.text = "Rp " + Utility.moneyFormat(amount.toInt())
         txtCatatan.text = catatan
 
+        val detailObj = TransactionDetail(note = catatan)
+        val detail = SecurityUtil.encryptTransaction(detailObj)
+
         btnSend.setOnClickListener {
-//            transfer(nohp, amount, catatan)
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            homeVM.doTransaction(transaction?.type ?: "",
+                transaction?.status ?: "", transaction?.amount ?: 0, transaction?.recId.toString(), detail ).observe(this){
+                    when(it){
+                        is Result.Error -> {
+                            alertDialogBuilder.setTitle("Transfer Failed")
+                            alertDialogBuilder.setMessage(it.error)
+                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                            }
+                            val alertDialog = alertDialogBuilder.create()
+                            alertDialog.show()
+                        }
+                        Result.Loading -> {
+
+                        }
+                        is Result.Success -> {
+                            alertDialogBuilder.setTitle("Transfer Successful")
+                            alertDialogBuilder.setMessage("Money Successfully Transfered")
+                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                            val alertDialog = alertDialogBuilder.create()
+                            alertDialog.show()
+                        }
+                    }
+            }
         }
 
 //        getCurrentUser()

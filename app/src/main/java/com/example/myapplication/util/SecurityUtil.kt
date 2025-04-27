@@ -6,6 +6,8 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import android.util.Base64
 import android.util.Log
+import com.example.myapplication.dataclass.TransactionDetail
+import com.google.gson.Gson
 
 
 object SecurityUtil {
@@ -13,6 +15,7 @@ object SecurityUtil {
     private const val AES_MODE = "AES/GCM/NoPadding"
     private const val IV_SIZE = 12
     private const val TAG_LENGTH = 128 // Recommended IV size for GCM
+    private val gson = Gson()
 
     fun encrypt(plainText: String, secretKey: SecretKey): String {
         val cipher = Cipher.getInstance(AES_MODE)
@@ -63,6 +66,16 @@ object SecurityUtil {
         val hashBytes = digest.digest(input.toByteArray(Charsets.UTF_8))
 
         return hashBytes.joinToString("") { "%02x".format(it) }
+    }
+
+    fun encryptTransaction(transactionDetail: TransactionDetail): String {
+        val json = gson.toJson(transactionDetail)
+        return encrypt(json, KeyGenerator.getSecretKey())
+    }
+
+    fun decryptTransaction(encryptedData: String): TransactionDetail {
+        val decryptedJson = decrypt(encryptedData, KeyGenerator.getSecretKey())
+        return gson.fromJson(decryptedJson, TransactionDetail::class.java)
     }
 
 }

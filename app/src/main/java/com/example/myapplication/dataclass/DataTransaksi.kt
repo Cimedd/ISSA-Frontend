@@ -1,10 +1,12 @@
 package com.example.myapplication.dataclass
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-
+@Parcelize
 data class DataTransaction(
-    @field:SerializedName("created_At")
+    @field:SerializedName("created_at")
     val createdAt: String? = null,
 
     @field:SerializedName("id")
@@ -20,11 +22,14 @@ data class DataTransaction(
     val status: String ,
 
     @field:SerializedName("user_id")
-    val userID: Int? = null,
+    val userID: Int,
+
+    @field:SerializedName("user_id")
+    val recID: Int? = null,
 
     @field:SerializedName("details")
     val detail: String
-)
+):Parcelable
 
 data class TransactionDetail(
     val senderId: String? = null,         // For user transfers
@@ -33,15 +38,11 @@ data class TransactionDetail(
     @SerializedName("bankId")
     val bankId: String? = null,           // For bank-based transactions
     @SerializedName("accountNumber")
-    val accountNumber: String? = null,    // For withdrawalsW
+    val accountNumber: String? = null,    // For withdrawals
     @SerializedName("productId")
     val productId: String? = null,        // For top-up or voucher
-    @SerializedName("phoneNumber")
-    val phoneNumber: String? = null,      // For isi pulsa / phone-based services
     @SerializedName("billType")
-    val billType: String? = null,         // For bill payment type (e.g., PLN, PDAM)
-    @SerializedName("billID")
-    val billID: String? = null,           // User ID for the bill system
+    val billType: String? = null,         // For bill payment type (e.g., PLN, PDAM) // User ID for the bill system
     @SerializedName("referenceCode")
     val referenceCode: String? = null,    // Invoice or payment proof
     @SerializedName("note")

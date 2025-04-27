@@ -6,12 +6,17 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataTransaction
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.SecurityUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -25,6 +30,10 @@ class DetailTopupActivity : AppCompatActivity() {
     private lateinit var txtId: TextView
     private lateinit var txtProduct: TextView
     private lateinit var sessionManager: SessionManager
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +51,14 @@ class DetailTopupActivity : AppCompatActivity() {
             finish()
         }
 
-//        requestDetailTopup(this)
+        val transaction = intent.getParcelableExtra<DataTransaction>("transaction")
+        val detail = SecurityUtil.decryptTransaction(transaction?.detail ?: "")
+
+        txtAmount.text = transaction?.amount.toString()
+        txtProduct.text = detail.referenceCode
+        txtDate.text  = transaction?.createdAt
+        txtStatus.text = transaction?.status
+
     }
 
 //    private fun requestDetailTopup(context: Context) {

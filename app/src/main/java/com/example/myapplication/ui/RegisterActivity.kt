@@ -17,11 +17,14 @@ import com.example.myapplication.R
 import com.example.myapplication.network.Result
 import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
+import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.Utility
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var btnLogin: TextView
     private lateinit var inputNama: EditText
     private lateinit var inputEmail: EditText
+    private lateinit var inputPassword: EditText
     private lateinit var inputHp: EditText
     private lateinit var btnNext: Button
     private val settingVM by viewModels<SettingViewModel>{
@@ -37,6 +40,7 @@ class RegisterActivity : AppCompatActivity() {
         inputEmail = findViewById(R.id.txtEmail)
         inputHp = findViewById(R.id.txtNoHp)
         btnLogin = findViewById(R.id.btnLogin)
+        inputPassword = findViewById(R.id.txtPassword)
 
         btnLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -57,8 +61,9 @@ class RegisterActivity : AppCompatActivity() {
                 val nama = inputNama.text.toString().trim()
                 val email = inputEmail.text.toString().trim()
                 val hp = inputHp.text.toString().trim()
+                val pass = inputPassword.text.toString().trim()
 
-                settingVM.register(nama,email,"",hp).observe(this){
+                settingVM.register(nama,email,SecurityUtil.sha256(pass),hp).observe(this){
                     when(it){
                         is Result.Error -> {
                             Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()}

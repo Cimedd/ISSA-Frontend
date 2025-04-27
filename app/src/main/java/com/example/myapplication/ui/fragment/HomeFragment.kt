@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.activity.viewModels
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -38,11 +38,8 @@ import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.example.myapplication.util.Utility
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.json.JSONObject
-import java.text.DecimalFormat
 
 class HomeFragment: Fragment() {
     private lateinit var sessionManager: SessionManager
@@ -64,7 +61,7 @@ class HomeFragment: Fragment() {
     private lateinit var swipe: SwipeRefreshLayout
     private lateinit var userID : String
 
-    private val settingVM by viewModels<SettingViewModel>{
+    private val settingVM by viewModels<SettingViewModel> {
         SettingVMF.getInstance(requireActivity())
     }
 
@@ -78,6 +75,13 @@ class HomeFragment: Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_home, container, false)
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
         sessionManager = SessionManager(activity)
         txtName = view.findViewById(R.id.txtName)
@@ -93,45 +97,23 @@ class HomeFragment: Fragment() {
         home = view.findViewById(R.id.home)
         welcome = view.findViewById(R.id.welcome)
         swipe = view.findViewById(R.id.swipe)
-
-        lifecycleScope.launch {
-            userID = settingVM.getUser()
-        }
-
-        homeVM.getUser().observe(requireActivity()){
-            when(it){
-                is Result.Error -> {
-                    stopShimmer()
-                    txtName.text = "Halo, " + "!"
-                    txtSaldo.text = Utility.moneyFormat(0)
-                }
-                Result.Loading -> {
-                    startShimmer()
-                    txtName.text = "Halo, " + "!"
-                    txtSaldo.text = Utility.moneyFormat(0)
-                }
-
-                is Result.Success -> {
-                    stopShimmer()
-                    txtName.text =  "Halo, " + it.data.name + "!"
-                    txtSaldo.text = Utility.moneyFormat(it.data.saldo)
-                }
-            }
-        }
-
+        btnWithdraw = view.findViewById(R.id.btnWithdraw)
         btnDeposit = view.findViewById(R.id.btnDeposit)
+        btnTransfer = view.findViewById(R.id.btnTransfer)
+
+
         btnDeposit.setOnClickListener {
             val intent = Intent(activity, DepositActivity::class.java)
             startActivity(intent)
         }
 
-        btnWithdraw = view.findViewById(R.id.btnWithdraw)
+
         btnWithdraw.setOnClickListener {
             val intent = Intent(activity, TarikTunaiActivity::class.java)
             startActivity(intent)
         }
 
-        btnTransfer = view.findViewById(R.id.btnTransfer)
+
         btnTransfer.setOnClickListener {
             val intent = Intent(activity, Transfer1Activity::class.java)
             startActivity(intent)
@@ -140,31 +122,55 @@ class HomeFragment: Fragment() {
         swipe.setOnRefreshListener {
             dataHome.clear()
             swipe.isRefreshing = false
+            homeVM.getHistory()
         }
 
-        recyclerMenu.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
 
-        homeVM.getHistory().observe(requireActivity()){
+        generateMenus()
+
+
+        lifecycleScope.launch {
+            userID = settingVM.getUser()
+            homeVM.getHistory()
+        }
+        homeVM.getUser().observe(requireActivity()){
             when(it){
                 is Result.Error -> {
-
+                    stopShimmer()
+                    txtName.text = "Halo, " + "!"
+                    txtSaldo.text = Utility.moneyFormat(0)
+                    Toast.makeText(requireActivity(), it.error, Toast.LENGTH_SHORT).show()
+                    Log.d("error", it.error + "user")
                 }
-                Result.Loading ->{
-
+                Result.Loading -> {
+                    startShimmer()
+                    txtName.text = "Halo, " + "!"
+                    txtSaldo.text = Utility.moneyFormat(0)
                 }
                 is Result.Success -> {
-                    recyclerMenu.adapter = AdapterRiwayat(requireActivity(), it.data.take(3), userID)
+                    stopShimmer()
+                    txtName.text =  "Halo, " + it.data.name + "!"
+                    txtSaldo.text = Utility.moneyFormat(it.data.saldo)
+
                 }
             }
         }
 
-        generateMenus()
-//        getData()
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        homeVM.transaction.observe(requireActivity()){
+            when(it){
+                is Result.Error -> {
+                    Toast.makeText(requireActivity(), it.error, Toast.LENGTH_SHORT).show()
+                    Log.d("error", it.error)
+                }
+                Result.Loading ->{
+                }
+                is Result.Success -> {
+                    recyclerView.adapter =
+                        it.data?.let { it1 -> AdapterRiwayat(requireActivity(), it1.take(3), userID) }
+                }
+            }
+        }
 
     }
 

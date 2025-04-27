@@ -8,7 +8,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class SettingRepo(private val api: ApiService, private val settingPref: SettingPref) {
 
     suspend fun login(email : String, password : String): ResponseLogin{
-        val body = mapOf("email" to email, "password" to password)
+        val body = mapOf("phone_number" to email, "password" to password)
         return api.login(body)
     }
 
@@ -18,11 +18,11 @@ class SettingRepo(private val api: ApiService, private val settingPref: SettingP
     }
 
     suspend fun logout(){
-        api.logout();
+        settingPref.loggedOut()
     }
 
     suspend fun getID() : String{
-        return settingPref.getUser().firstOrNull() ?: ""
+        return settingPref.getID().firstOrNull() ?: ""
     }
 
     suspend fun saveToDataStore(uid: String, name: String, url: String){
@@ -30,12 +30,12 @@ class SettingRepo(private val api: ApiService, private val settingPref: SettingP
     }
 
     suspend fun checkUser(): Boolean {
-        val token = settingPref.checkUser().firstOrNull()
+        val token = settingPref.getToken().firstOrNull()
         return token != ""
     }
 
-    suspend fun getUser(): String {
-        return settingPref.checkUser().firstOrNull() ?: ""
+    suspend fun getToken(): String {
+        return settingPref.getToken().firstOrNull() ?: ""
     }
 
     suspend fun sendVerif(email :String): ResponseStatus{

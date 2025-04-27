@@ -5,12 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -32,6 +36,9 @@ class TarikTunaiActivity : AppCompatActivity() {
     private lateinit var btn500k: TextView
     private lateinit var btn1000k: TextView
     private lateinit var btnLanjut: Button
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +56,15 @@ class TarikTunaiActivity : AppCompatActivity() {
         metodeName.text = metode["name"]
         Picasso.get().load(metode["icon"]).into(metodeIcon)
 
-//        getSaldo()
+        homeVM.getSaldo().observe(this){
+            when(it){
+                is Result.Error -> {}
+                Result.Loading -> {}
+                is Result.Success -> {
+                    txtSaldo.text = it.data.saldo.toString()
+                }
+            }
+        }
 
         btnMethod = findViewById(R.id.btnMethod)
         btnBack = findViewById(R.id.btnBack)

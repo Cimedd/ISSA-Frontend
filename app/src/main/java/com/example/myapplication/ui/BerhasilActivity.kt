@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.util.Utility
 import java.text.DecimalFormat
 
 class BerhasilActivity : AppCompatActivity() {
@@ -26,11 +27,12 @@ class BerhasilActivity : AppCompatActivity() {
         val decimalFormat = DecimalFormat("#,###")
 
         txtTitle.text = title
-        txtAmount.text = "Rp " + decimalFormat.format(amount.toInt()).toString()
+        txtAmount.text = "Rp " + Utility.moneyFormat(amount.toInt())
 
         btnBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }

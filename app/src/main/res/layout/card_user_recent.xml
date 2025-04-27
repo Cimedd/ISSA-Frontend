@@ -9,23 +9,24 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/photoProfile"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_gravity="center"
-            android:src="@drawable/model_ssst4"/>
+            android:src="@drawable/model_ssst4" />
 
         <TextView
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="12dp"
             android:text="Sella Fransisca"
-            android:textSize="14sp"
-            android:textColor="@color/primary"/>
+            android:textColor="@color/primary"
+            android:textSize="24sp" />
 
     </LinearLayout>
 

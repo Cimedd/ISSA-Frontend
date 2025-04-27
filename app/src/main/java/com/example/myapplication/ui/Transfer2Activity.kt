@@ -7,14 +7,24 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.Transaction
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
+import com.example.myapplication.util.TransactionType
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class Transfer2Activity : AppCompatActivity() {
@@ -32,6 +42,10 @@ class Transfer2Activity : AppCompatActivity() {
     private lateinit var btn500k: TextView
     private lateinit var btn1000k: TextView
     private lateinit var btnLanjut: Button
+
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +68,7 @@ class Transfer2Activity : AppCompatActivity() {
         btnLanjut = findViewById(R.id.btnLanjut)
 
         val phone = intent.getStringExtra("nohp").toString()
-//        getUser(phone)
+        val rec_id = intent.getIntExtra("id", 1)
 
         btnBack.setOnClickListener {
             finish()
@@ -112,14 +126,16 @@ class Transfer2Activity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // chek if cataatan is empty
             if(editCatatan.text.toString().isEmpty()){
                 catatan = "-"
             } else {
                 catatan = editCatatan.text.toString().trim()
             }
 
+            val transaction = Transaction(TransactionType.TRANSFER.toString(), "success", editAmount.text.toString().toInt(),
+                rec_id)
             val intent = Intent(this, KonfirmasiTransferActivity::class.java)
+            intent.putExtra("transaction", transaction)
             intent.putExtra("nohp", phone)
             intent.putExtra("amount", editAmount.text.toString().trim())
             intent.putExtra("catatan", catatan)

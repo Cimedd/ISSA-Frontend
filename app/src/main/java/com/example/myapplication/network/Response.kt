@@ -22,7 +22,7 @@ data class ResponseTransaction(
     @field:SerializedName("message")
     val message: String,
 
-    @field:SerializedName("transaction")
+    @field:SerializedName("transactions")
     val transactions: List<DataTransaction>
 )
 
@@ -56,7 +56,7 @@ data class ResponseProvider(
     val message: String,
 
     @field:SerializedName("provider")
-    val contacts: List<DataProvider>
+    val provider: List<DataProvider>
 )
 
 data class ResponseProduct(

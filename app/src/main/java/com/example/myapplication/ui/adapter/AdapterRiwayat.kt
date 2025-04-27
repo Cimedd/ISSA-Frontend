@@ -11,19 +11,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
-import com.example.myapplication.dataclass.DataRiwayat
-import com.example.myapplication.dataclass.DataTransaction
+import com.example.myapplication.network.TransactionsItem
 import com.example.myapplication.ui.CheckOutActivity
 import com.example.myapplication.ui.DetailTopupActivity
 import com.example.myapplication.ui.DetailTransferActivity
 import com.example.myapplication.ui.DetailWithdrawActivity
 import com.example.myapplication.ui.SessionManager
-import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 
 @SuppressLint("RecyclerView")
 
-class AdapterRiwayat(val context: Context, val riwayatList: List<DataTransaction>,val id : String): RecyclerView.Adapter<AdapterRiwayat.MyViewHolder>() {
+class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsItem?>, val id: String): RecyclerView.Adapter<AdapterRiwayat.MyViewHolder>() {
     private lateinit var sessionManager : SessionManager
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -36,12 +34,12 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<DataTransaction
         val decimalFormat = DecimalFormat("#,###")
 
         // format date to dd-mm-yyyy HH:mm
-        val date = currentItem.createdAt;
+        val date = currentItem?.createdAt;
 
-        holder.txtType.text = currentItem.type
-        holder.txtAmount.text = "Rp " + decimalFormat.format(currentItem.amount).toString()
-        holder.txtDate.text = date
-        holder.txtStatus.text = currentItem.status
+        holder.txtType.text = currentItem?.type
+        holder.txtAmount.text = "Rp " + decimalFormat.format(currentItem?.amount).toString()
+        holder.txtDate.text = date.toString()
+        holder.txtStatus.text = currentItem?.status
 
         // load icon
 //        Picasso.get()
@@ -49,42 +47,43 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<DataTransaction
 //            .into(holder.icon)
 
         // check if status is success
-        when(currentItem.status) {
-            "Success" -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.green2))
-            "Pending" -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.orange))
+        when(currentItem?.status) {
+            "success" -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.green2))
+            "pending" -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.orange))
             else -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.red))
         }
 
         holder.itemView.setOnClickListener {
-            if(currentItem.type == "Deposit") {
-                holder.icon.setImageResource(R.drawable.deposit2)
-                val intent = Intent(context, CheckOutActivity::class.java)
-                intent.putExtra("id", currentItem.id)
-                startActivity(context, intent, null)
-            }
-            else if(currentItem.type == "Transfer") {
-                if (currentItem.userID.toString() != id){
-                    holder.icon.setImageResource(R.drawable.ic_uang_masuk)
+            when (currentItem?.type) {
+                "Deposit" -> {
+                    holder.icon.setImageResource(R.drawable.deposit2)
+                    val intent = Intent(context, CheckOutActivity::class.java)
+                    intent.putExtra("transaction", currentItem)
+                    startActivity(context, intent, null)
                 }
-                else{
-                    holder.icon.setImageResource(R.drawable.ic_uang_keluar)
-                }
+                "Transfer" -> {
+                    if (currentItem.userId.toString() != id){
+                        holder.icon.setImageResource(R.drawable.ic_uang_masuk)
+                    } else{
+                        holder.icon.setImageResource(R.drawable.ic_uang_keluar)
+                    }
 
-                val intent = Intent(context, DetailTransferActivity::class.java)
-                intent.putExtra("id", currentItem.id)
-                startActivity(context, intent, null)
-            }
-            else if(currentItem.type == "Withdraw") {
-                holder.icon.setImageResource(R.drawable.withdraw2)
-                val intent = Intent(context, DetailWithdrawActivity::class.java)
-                intent.putExtra("id", currentItem.id)
-                startActivity(context, intent, null)
-            }
-            else if(currentItem.type == "Topup") {
-                holder.icon.setImageResource(R.drawable.voucher)
-                val intent = Intent(context, DetailTopupActivity::class.java)
-                intent.putExtra("id", currentItem.id)
-                startActivity(context, intent, null)
+                    val intent = Intent(context, DetailTransferActivity::class.java)
+                    intent.putExtra("transaction", currentItem)
+                    startActivity(context, intent, null)
+                }
+                "Withdraw" -> {
+                    holder.icon.setImageResource(R.drawable.withdraw2)
+                    val intent = Intent(context, DetailWithdrawActivity::class.java)
+                    intent.putExtra("transaction", currentItem)
+                    startActivity(context, intent, null)
+                }
+                "Topup" -> {
+                    holder.icon.setImageResource(R.drawable.voucher)
+                    val intent = Intent(context, DetailTopupActivity::class.java)
+                    intent.putExtra("transaction", currentItem)
+                    startActivity(context, intent, null)
+                }
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.myapplication.dataclass
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class DataContact(
     @field:SerializedName("id")
@@ -25,3 +27,14 @@ data class DataUser(
     @field:SerializedName("email")
     val email: Int,
 )
+@Parcelize
+data class Transaction(
+    @field:SerializedName("type")
+    val type : String,
+    @field:SerializedName("status")
+    val status: String,
+    @field:SerializedName("amount")
+    val amount: Int,
+    @field:SerializedName("receiver_id")
+    val recId: Int? = null
+):Parcelable

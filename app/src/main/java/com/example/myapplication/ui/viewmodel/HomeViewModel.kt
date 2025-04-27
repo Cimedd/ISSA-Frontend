@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.dataclass.DataContact
+import com.example.myapplication.dataclass.DataProduct
+import com.example.myapplication.dataclass.DataProvider
+import com.example.myapplication.dataclass.DataTransaction
 import com.example.myapplication.network.ApiRepo
 import com.example.myapplication.network.Result
+import com.example.myapplication.network.TransactionsItem
 import kotlinx.coroutines.launch
 
 
@@ -16,12 +20,75 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
     private val _contact = MutableLiveData<Result<List<DataContact>>>()
     val contact : LiveData<Result<List<DataContact>>> = _contact
 
-    fun getHistory()= liveData{
+    private val _provider = MutableLiveData<Result<List<DataProvider>>>()
+    val provider : LiveData<Result<List<DataProvider>>> = _provider
+
+
+    private val _product = MutableLiveData<Result<List<DataProduct>>>()
+    val product : LiveData<Result<List<DataProduct>>> = _product
+
+    private val _transaction = MutableLiveData<Result<List<TransactionsItem?>?>>()
+    val transaction : LiveData<Result<List<TransactionsItem?>?>> = _transaction
+
+    fun getHistory(){
+        viewModelScope.launch {
+            _transaction.value = Result.Loading
+            try {
+                val response = repo.getTransaction()
+                if(response.status == "success"){
+                    _transaction.value = Result.Success(response.transactions)
+                }
+                else{
+                    _transaction.value = Result.Error( response.message ?: "" )
+                }
+            }
+            catch (e : Exception){
+                _transaction.value = Result.Error( e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun getProduct(id : Int){
+        viewModelScope.launch {
+            _product.value = Result.Loading
+            try {
+                val response = repo.getProduct(id)
+                if(response.status == "success"){
+                    _product.value = Result.Success(response.products)
+                }
+                else{
+                    _product.value = Result.Error( response.message )
+                }
+            }
+            catch (e : Exception){
+                _product.value = Result.Error( e.message ?: "Unknown error")
+            }
+        }
+    }
+    fun getProvider(id : Int){
+        viewModelScope.launch {
+            _provider.value = Result.Loading
+            try {
+                val response = repo.getProvider(id)
+                if(response.status == "success"){
+                    _provider.value = Result.Success(response.provider)
+                }
+                else{
+                    _provider.value = Result.Error( response.message )
+                }
+            }
+            catch (e : Exception){
+                _provider.value = Result.Error( e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun getSaldo() = liveData {
         emit(Result.Loading)
         try {
-            val response = repo.getTransaction()
+            val response = repo.getUserData()
             if(response.status == "success"){
-                emit(Result.Success(response.transactions))
+                emit(Result.Success(response.contacts))
             }
             else{
                 emit(Result.Error( response.message ))
@@ -32,10 +99,10 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
         }
     }
 
-    fun doTransaction(type : String, status : String, amount : Int, receiverId : String? = null) = liveData {
+    fun doTransaction(type : String, status : String, amount : Int, receiverId : String? = null, detail : String) = liveData {
         emit(Result.Loading)
         try {
-            val response = repo.makeTransaction(type,status,amount, receiverId)
+            val response = repo.makeTransaction(type,status,amount, receiverId, detail)
             if(response.status == "success"){
                 emit(Result.Success(response.message))
             }
@@ -98,4 +165,9 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
             emit(Result.Error( e.message ?: "Unknown error"))
         }
     }
+
+    suspend fun logout(){
+        repo.logout()
+    }
+
 }

@@ -4,12 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.TransactionType
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -28,6 +33,9 @@ class DepositActivity : AppCompatActivity() {
     private lateinit var btnMethod: RelativeLayout
     private lateinit var metodeIcon: ImageView
     private lateinit var metodeName: TextView
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +108,22 @@ class DepositActivity : AppCompatActivity() {
                 editAmount.requestFocus()
                 return@setOnClickListener
             } else {
-//                requestDeposit(code, editAmount.text.toString())
+                homeVM.doTransaction( type =  TransactionType.DEPOSIT.toString(), status = "success", amount = editAmount.text.toString()
+                    .toInt(), detail = "").observe(this){
+                        when(it){
+                            is Result.Error -> {
+
+                            }
+                            Result.Loading -> {}
+                            is Result.Success -> {
+                                val intent = Intent(this@DepositActivity, CheckOutActivity::class.java)
+//                                    intent.putExtra("id", data.getString("_id"))
+//                                    intent.putExtra("reference", data.getString("reference"))
+//                                    intent.putExtra("merchant_ref", data.getString("merchant_ref"))
+                                    startActivity(intent)
+                            }
+                        }
+                }
             }
         }
     }
@@ -133,11 +156,7 @@ class DepositActivity : AppCompatActivity() {
 //                    val data = response.getJSONObject("data")
 //
 //                    if(response.getString("success").equals("true")) {
-//                        val intent = Intent(this@DepositActivity, CheckOutActivity::class.java)
-//                        intent.putExtra("id", data.getString("_id"))
-//                        intent.putExtra("reference", data.getString("reference"))
-//                        intent.putExtra("merchant_ref", data.getString("merchant_ref"))
-//                        startActivity(intent)
+//
 //                    }
 //                }
 //

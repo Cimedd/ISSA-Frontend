@@ -8,12 +8,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataProduct
+import com.example.myapplication.dataclass.TransactionDetail
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.TransactionType
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
 import java.text.DecimalFormat
@@ -21,11 +30,16 @@ import java.text.DecimalFormat
 class PembayaranActivity : AppCompatActivity() {
     private lateinit var btnBack: ImageView
     private lateinit var txtSaldo: TextView
+    private lateinit var txtNama: TextView
+    private lateinit var txtHarga: TextView
     private lateinit var editReceiver: EditText
     private lateinit var btnBayar: Button
     private lateinit var sessionManager: SessionManager
     private lateinit var txtKet: TextView
-    private lateinit var txtHelper: TextView
+
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,33 +51,41 @@ class PembayaranActivity : AppCompatActivity() {
         btnBayar = findViewById(R.id.btnBayar)
         sessionManager = SessionManager(this)
         txtKet = findViewById(R.id.txtKet)
-        txtHelper = findViewById(R.id.txtHelper)
+        txtHarga = findViewById(R.id.txtHargaProduk)
+        txtNama = findViewById(R.id.txtNamaProduk)
 
-//        getSaldo()
 
-        val type = intent.getStringExtra("type")
-        if(type.equals("data") || type.equals("pulsa") || type.equals("etoll")) {
-            txtKet.text = "Masukkan Nomor Penerima"
-            txtHelper.text = "*Nomor penerima harus terdaftar sesuai dengan operator yang dipilih"
-        } else {
-            txtKet.text = "Masukkan Customer ID"
-            txtHelper.text = ""
-        }
+        val product = intent.getParcelableExtra<DataProduct>("product")
+        txtNama.text = product?.name
+        txtHarga.text = product?.price.toString()
 
         btnBack.setOnClickListener {
             finish()
         }
 
+
         btnBayar.setOnClickListener {
             val receiver = editReceiver.text.toString().trim()
-            val code = intent.getStringExtra("code").toString()
-
+            val encrypt = SecurityUtil.encryptTransaction(TransactionDetail(accountNumber = receiver, referenceCode =
+            Utility.generateTransactionCode(), billType = "X"))
             if(receiver.isEmpty()) {
                 editReceiver.error = "Penerima tidak boleh kosong"
                 editReceiver.requestFocus()
                 return@setOnClickListener
             } else {
-//                requestTopup(code, receiver, this)
+                homeVM.doTransaction(type = TransactionType.TOP_UP.value, status = "success", amount = txtHarga.text.toString().toInt() , detail = encrypt ).observe(this
+                ){
+                    when(it){
+                        is Result.Error -> TODO()
+                        Result.Loading -> TODO()
+                        is Result.Success -> {
+                            val intent = Intent(this, BerhasilActivity::class.java)
+                            intent.putExtra("title", "Topup Berhasil")
+                            intent.putExtra("amount", txtHarga.text.toString().toInt())
+                            startActivity(intent)
+                        }
+                    }
+                }
             }
 
         }
@@ -85,10 +107,7 @@ class PembayaranActivity : AppCompatActivity() {
                         val data = response.getJSONObject("data")
                         Log.d("response sukses", response.toString())
                         if(response.getString("success").equals("true")) {
-                            val intent = Intent(context, BerhasilActivity::class.java)
-                            intent.putExtra("title", "Topup Berhasil")
-                            intent.putExtra("amount", data.getString("amount"))
-                            startActivity(intent)
+
                         }
                     } catch (e: Exception) {
                         Log.d("response gagal", response.toString())

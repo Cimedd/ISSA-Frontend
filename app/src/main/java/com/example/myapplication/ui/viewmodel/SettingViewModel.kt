@@ -13,7 +13,7 @@ class SettingViewModel(private val repo : SettingRepo): ViewModel() {
             val response = repo.login(username,password)
             if(response.status == "success"){
                 emit(Result.Success(response))
-                repo.saveToDataStore(response.userId, response.name, response.token)
+                repo.saveToDataStore(response.userId, response.token, response.name)
             }else {
                 val errorMessage = response.message
                 emit(Result.Error(errorMessage))
@@ -23,12 +23,16 @@ class SettingViewModel(private val repo : SettingRepo): ViewModel() {
             emit(Result.Error( e.message ?: "Unknown error"))
         }
     }
+
     fun register(email : String, username : String, password : String, phone : String) = liveData{
         emit(Result.Loading)
         try {
             val response = repo.register(email,username,password, phone)
             if(response.status == "success"){
                 emit(Result.Success(response))
+            }else {
+                val errorMessage = response.message
+                emit(Result.Error(errorMessage))
             }
         }
         catch (e : Exception){
@@ -45,10 +49,10 @@ class SettingViewModel(private val repo : SettingRepo): ViewModel() {
     }
 
     suspend fun getUser() : String{
-        return repo.getUser()
+        return repo.getToken()
     }
 
-    suspend fun getID() : String{
+    suspend fun getId() : String{
         return repo.getID()
     }
 

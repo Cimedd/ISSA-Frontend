@@ -7,12 +7,20 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.TransactionDetail
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.TransactionType
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -27,6 +35,11 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
     private lateinit var txtSubtotal : TextView
     private lateinit var txtTotal : TextView
     private lateinit var btnLanjut: Button
+
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(this)
+    }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +56,30 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
         txtTotal = findViewById(R.id.txtTotal)
         btnLanjut = findViewById(R.id.btnLanjut)
 
-        setData()
+        val amount = (intent.getStringExtra("amount")?.toInt()?.minus(2500)).toString()
+        val rekening = intent.getStringExtra("rekening")
+        val code = Utility.generateTransactionCode()
 
+        val detail =SecurityUtil.encryptTransaction(TransactionDetail(accountNumber = rekening, bankId = "1", referenceCode =code ))
         btnBack.setOnClickListener {
             finish()
         }
 
         btnLanjut.setOnClickListener {
-            val amount = (intent.getStringExtra("amount")?.toInt()?.minus(2500)).toString()
-            val rekening = intent.getStringExtra("rekening")
-
-//            requestWithdraw(rekening.toString(), amount.toString())
+            homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
+                status = "success", amount = amount.toInt(), detail = detail ).observe(this){
+                    when(it){
+                        is Result.Error -> {}
+                        Result.Loading -> {}
+                        is Result.Success -> {
+                            val intent = Intent(this, BerhasilActivity::class.java)
+                            intent.putExtra("title", "Withdraw Berhasil")
+                            intent.putExtra("amount", amount)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+            }
         }
     }
 
@@ -88,10 +114,7 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
 //                override fun onResponse(response: JSONObject) {
 //                    Log.d("response", response.toString())
 //                    if (response.getString("success").equals("true")) {
-//                        val intent = Intent(this@KonfirmasiTarikTunaiActivity, BerhasilActivity::class.java)
-//                        intent.putExtra("title", "Withdraw Berhasil")
-//                        intent.putExtra("amount", amount)
-//                        startActivity(intent)
+//
 //                    }
 //                }
 //

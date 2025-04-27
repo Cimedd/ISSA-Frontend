@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataProvider
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.ui.TopupActivity2
 import com.example.myapplication.dataclass.DataTopup
@@ -18,7 +19,7 @@ import com.squareup.picasso.Picasso
 
 @SuppressLint("RecyclerView")
 
-class AdapterTopup(val context: Context, val topupList: ArrayList<DataTopup>): RecyclerView.Adapter<AdapterTopup.MyViewHolder>() {
+class AdapterTopup(val context: Context, val topupList: List<DataProvider>): RecyclerView.Adapter<AdapterTopup.MyViewHolder>() {
     private lateinit var sessionManager : SessionManager
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -34,16 +35,12 @@ class AdapterTopup(val context: Context, val topupList: ArrayList<DataTopup>): R
 
         // load icon
         Picasso.get()
-            .load(currentItem.icon)
+            .load(R.drawable.bg_listrik)
             .into(holder.productImg)
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, TopupActivity2::class.java)
-            intent.putExtra("code", currentItem.code)
-            intent.putExtra("name", currentItem.name)
-            intent.putExtra("type", currentItem.type)
-            intent.putExtra("icon", currentItem.icon)
-
+            intent.putExtra("id", currentItem.id)
             startActivity(context, intent, null)
         }
 

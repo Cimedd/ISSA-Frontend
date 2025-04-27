@@ -12,6 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataTransaction
+import com.example.myapplication.dataclass.Transaction
+import com.example.myapplication.network.TransactionsItem
+import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -25,6 +30,7 @@ class DetailTransferActivity : AppCompatActivity() {
     private lateinit var txtSenderPhone: TextView
     private lateinit var txtStatus: TextView
     private lateinit var txtDate: TextView
+    private lateinit var txtNote: TextView
     private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +43,23 @@ class DetailTransferActivity : AppCompatActivity() {
         txtSenderPhone = findViewById(R.id.txtSenderPhone)
         txtStatus = findViewById(R.id.txtStatus)
         txtDate = findViewById(R.id.txtDate)
+        txtNote = findViewById(R.id.txtCatatanDetail)
         sessionManager = SessionManager(this)
 
         btnBack.setOnClickListener {
             finish()
         }
 
-//        requestDetailTransfer(this)
+        val transaction = intent.getParcelableExtra<TransactionsItem>("transaction")
+        val detail = SecurityUtil.decryptTransaction(transaction?.details ?: "")
+
+        txtAmount.text = "Rp " + Utility.moneyFormat(transaction?.amount ?: 0)
+        txtSender.text = transaction?.receiverId.toString()
+        txtSenderPhone.text = transaction?.receiverId.toString()
+        txtStatus.text = transaction?.status.toString()
+        txtDate.text = transaction?.createdAt
+        txtNote.text = detail.note
+
     }
 
 //    private fun requestDetailTransfer(context: Context) {

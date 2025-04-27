@@ -1,27 +1,29 @@
 package com.example.myapplication.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
-import com.example.myapplication.ui.LoginActivity
 import com.example.myapplication.R
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.ui.adapter.AdapterRiwayat
 import com.example.myapplication.dataclass.DataRiwayat
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.coroutines.launch
 
 
 class RiwayatFragment : Fragment() {
@@ -30,6 +32,14 @@ class RiwayatFragment : Fragment() {
     private lateinit var sessionManager: SessionManager
     private lateinit var shimmer: ShimmerFrameLayout
     private lateinit var swipe: SwipeRefreshLayout
+    private lateinit var userID : String
+
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(requireActivity())
+    }
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(requireActivity())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,11 +53,30 @@ class RiwayatFragment : Fragment() {
         shimmer = view.findViewById(R.id.shimmer)
         swipe = view.findViewById(R.id.swipe)
 
+
+        lifecycleScope.launch {
+            userID = settingVM.getUser()
+        }
 //        getTransactions()
         swipe.setOnRefreshListener {
             dataRiwayat.clear()
 //            getTransactions()
             swipe.isRefreshing = false
+        }
+
+        homeVM.transaction.observe(requireActivity()){
+            when(it){
+                is Result.Error -> {
+
+                }
+                Result.Loading ->{
+
+                }
+                is Result.Success -> {
+                    recyclerView.adapter =
+                        it.data?.let { it -> AdapterRiwayat(requireActivity(), it, userID) }
+                }
+            }
         }
         return view
     }

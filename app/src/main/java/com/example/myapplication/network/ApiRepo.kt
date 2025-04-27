@@ -25,12 +25,20 @@ class ApiRepo(private val api : ApiService) {
         return api.getProvider(id)
     }
 
-    suspend fun getTransaction() : ResponseTransaction{
+    suspend fun getTransaction() : ResponseForTransaction{
         return api.getAllTransaction()
     }
 
-    suspend fun makeTransaction(type : String, status : String, amount : Int, receiverId : String? = null) : ResponseStatus{
-        val body = mapOf("type" to type, "status" to status, "amount" to amount.toString(), "receiver_id" to receiverId)
+    suspend fun makeTransaction(type : String, status : String, amount : Int, receiverId : String? = null, detail : String) : ResponseStatus{
+        val body = mapOf("type" to type, "status" to status, "amount" to amount.toString(), "receiver_id" to receiverId, "details" to  detail)
          return api.makeTransaction(body)
+    }
+
+    suspend fun getUserSaldo() : ResponseUser{
+        return api.getSaldo()
+    }
+
+    suspend fun logout(){
+        api.logout()
     }
 }

@@ -24,6 +24,8 @@ import com.example.myapplication.ui.EditProfilActivity
 import com.example.myapplication.ui.LoginActivity
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.ui.TentangKamiActivity
+import com.example.myapplication.ui.viewmodel.HomeVMF
+import com.example.myapplication.ui.viewmodel.HomeViewModel
 import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -50,6 +52,10 @@ class SettingFragment : Fragment() {
     private lateinit var swipe: SwipeRefreshLayout
     private val settingVM by viewModels<SettingViewModel>{
         SettingVMF.getInstance(requireActivity())
+    }
+
+    private val homeVM by viewModels<HomeViewModel>{
+        HomeVMF.getInstance(requireActivity())
     }
 
 
@@ -98,10 +104,12 @@ class SettingFragment : Fragment() {
 
         btnLogout.setOnClickListener {
             lifecycleScope.launch {
+                homeVM.logout()
                 settingVM.logout()
+                val intent = Intent(activity, LoginActivity::class.java)
+                startActivity(intent)
             }
-            val intent = Intent(activity, LoginActivity::class.java)
-            startActivity(intent)
+
         }
 
         return view

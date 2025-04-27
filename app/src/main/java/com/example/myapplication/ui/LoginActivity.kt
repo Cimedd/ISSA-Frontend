@@ -19,6 +19,7 @@ import com.example.myapplication.R
 import com.example.myapplication.network.Result
 import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
+import com.example.myapplication.util.SecurityUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -38,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         lifecycleScope.launch {
+            Log.d("Token", settingVM.getUser())
            if(settingVM.checkUser()){
                moveToMain()
            }
@@ -63,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 inputPassword.error = "Password tidak boleh kosong"
                 inputPassword.requestFocus()
             } else {
-                settingVM.login(inputHp.text.toString(),inputPassword.text.toString()).observe(this){
+                settingVM.login(inputHp.text.toString(),SecurityUtil.sha256(inputPassword.text.toString()) ).observe(this){
                     when(it){
                         is Result.Error -> {
                             val alertDialogBuilder = AlertDialog.Builder(this)

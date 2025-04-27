@@ -12,13 +12,14 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ui.PembayaranActivity
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataProduct
 import com.example.myapplication.ui.SessionManager
 import com.example.myapplication.dataclass.DataTopup
 import com.squareup.picasso.Picasso
 
 @SuppressLint("RecyclerView")
 
-class AdapterTopup2(val context: Context, val topupList: ArrayList<DataTopup>): RecyclerView.Adapter<AdapterTopup2.MyViewHolder>() {
+class AdapterTopup2(val context: Context, val topupList: List<DataProduct>): RecyclerView.Adapter<AdapterTopup2.MyViewHolder>() {
     private lateinit var sessionManager : SessionManager
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -34,13 +35,12 @@ class AdapterTopup2(val context: Context, val topupList: ArrayList<DataTopup>): 
 
         // load icon
         Picasso.get()
-            .load(currentItem.icon)
+            .load(R.drawable.bg_depo)
             .into(holder.productImg)
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, PembayaranActivity::class.java)
-            intent.putExtra("code", currentItem.code)
-            intent.putExtra("type", currentItem.type)
+            intent.putExtra("product", currentItem)
             startActivity(context, intent, null)
         }
 

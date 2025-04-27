@@ -97,23 +97,93 @@
 
         <EditText
             android:id="@+id/txtReceiver"
-            android:paddingHorizontal="12sp"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:textColor="@color/primary"
-            android:textSize="14sp"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/bg_grey_primary"
             android:inputType="numberDecimal"
-            android:background="@drawable/bg_grey_primary"/>
-
-        <TextView
-            android:id="@+id/txtHelper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Penerima"
+            android:paddingHorizontal="12sp"
             android:textColor="@color/primary"
-            android:layout_marginTop="3dp"
-            android:textSize="11sp"/>
+            android:textSize="14sp" />
+
+        <RelativeLayout
+            android:id="@+id/margin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metode Transfer"
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Saldo"
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:orientation="horizontal"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Produk"
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtNamaProduk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Produk"
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:orientation="horizontal"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Harga"
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/txtHargaProduk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Diamond"
+                android:textColor="@color/primary"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
