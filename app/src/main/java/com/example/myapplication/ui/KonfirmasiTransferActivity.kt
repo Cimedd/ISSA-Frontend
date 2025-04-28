@@ -3,11 +3,15 @@ package com.example.myapplication.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
@@ -19,7 +23,9 @@ import com.example.myapplication.dataclass.TransactionDetail
 import com.example.myapplication.network.Result
 import com.example.myapplication.ui.viewmodel.HomeVMF
 import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.BiometricUtil
 import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.TransactionType
 import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
@@ -37,6 +43,8 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
     private lateinit var txtSaldo: TextView
     private lateinit var photoProfile: ImageView
     private lateinit var btnSend: TextView
+    private lateinit var cbBio : CheckBox
+    private lateinit var txtPin : EditText
 
     private val homeVM by viewModels<HomeViewModel>{
         HomeVMF.getInstance(this)
@@ -54,9 +62,28 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
         txtCatatan = findViewById(R.id.txtCatatan)
         txtSaldo = findViewById(R.id.txtSaldo)
         btnSend = findViewById(R.id.btnSend)
+        cbBio = findViewById(R.id.cbBio)
+        txtPin = findViewById(R.id.txtPin)
 
         btnBack.setOnClickListener {
             finish()
+        }
+
+        var isFinger = false
+        cbBio.setOnClickListener {
+            if (cbBio.isChecked) {
+                if(BiometricUtil.isBiometricAvailable(this)){
+                    txtPin.isVisible = false
+                    isFinger = true
+                }
+                else{
+                    cbBio.isChecked = false
+                    Toast.makeText(this, "No Biometric Available", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                txtPin.isVisible = true
+                isFinger = true
+            }
         }
 
         homeVM.getSaldo().observe(this){
@@ -69,6 +96,7 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
                 is Result.Success -> txtSaldo.text = it.data.saldo.toString()
             }
         }
+
         val transaction = intent.getParcelableExtra<Transaction>("transaction")
 
         val nohp = intent.getStringExtra("nohp").toString()
@@ -82,34 +110,50 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
         val detailObj = TransactionDetail(note = catatan)
         val detail = SecurityUtil.encryptTransaction(detailObj)
 
-        btnSend.setOnClickListener {
+        homeVM.result.observe(this){
             val alertDialogBuilder = AlertDialog.Builder(this)
-            homeVM.doTransaction(transaction?.type ?: "",
-                transaction?.status ?: "", transaction?.amount ?: 0, transaction?.recId.toString(), detail ).observe(this){
-                    when(it){
-                        is Result.Error -> {
-                            alertDialogBuilder.setTitle("Transfer Failed")
-                            alertDialogBuilder.setMessage(it.error)
-                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
-                            }
-                            val alertDialog = alertDialogBuilder.create()
-                            alertDialog.show()
-                        }
-                        Result.Loading -> {
-
-                        }
-                        is Result.Success -> {
-                            alertDialogBuilder.setTitle("Transfer Successful")
-                            alertDialogBuilder.setMessage("Money Successfully Transfered")
-                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
-                                val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            val alertDialog = alertDialogBuilder.create()
-                            alertDialog.show()
-                        }
+            when(it){
+                is Result.Error -> {
+                    alertDialogBuilder.setTitle("Transfer Failed")
+                    alertDialogBuilder.setMessage(it.error)
+                    alertDialogBuilder.setPositiveButton("OK") { _, _ ->
                     }
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
+                }
+                Result.Loading -> {}
+                is Result.Success -> {
+                    alertDialogBuilder.setTitle("Transfer Successful")
+                    alertDialogBuilder.setMessage("Money Successfully Transfered")
+                    alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                        val intent = Intent(this, BerhasilActivity::class.java)
+                        intent.putExtra("title", "Transfer Berhasil")
+                        intent.putExtra("amount", amount)
+                        startActivity(intent)
+                        finish()
+                    }
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
+                }
+            }
+        }
+
+        btnSend.setOnClickListener {
+            if(isFinger){
+                BiometricUtil.showBiometricPrompt(
+                    activity = this,
+                    onSuccess = {
+                        homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
+                            status = "success", amount = amount.toInt(), detail = detail )
+                    },
+                    onError = {
+                        Toast.makeText(this, "Failed to verify!", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+            else{
+                homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
+                    status = "success", amount = amount.toInt(), detail = detail, pin = txtPin.text.toString() )
             }
         }
 

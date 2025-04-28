@@ -57,7 +57,7 @@ class DetailTransferActivity : AppCompatActivity() {
         txtSender.text = transaction?.receiverId.toString()
         txtSenderPhone.text = transaction?.receiverId.toString()
         txtStatus.text = transaction?.status.toString()
-        txtDate.text = transaction?.createdAt
+        txtDate.text = Utility.formatDateTime(transaction?.createdAt ?: "")
         txtNote.text = detail.note
 
     }

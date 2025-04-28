@@ -4,6 +4,7 @@ import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -22,6 +23,9 @@ interface ApiService {
 
     @GET("users")
     suspend fun getHomeData() : ResponseUser
+
+    @PUT("users")
+    suspend fun  updateUserData(@Body request: Map<String,String>) : ResponseStatus
 
     @GET("users/saldo")
     suspend fun getSaldo() : ResponseUser

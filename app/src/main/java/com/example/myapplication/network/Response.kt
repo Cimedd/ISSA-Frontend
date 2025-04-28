@@ -44,7 +44,7 @@ data class ResponseUser(
     @field:SerializedName("message")
     val message: String,
 
-    @field:SerializedName("contacts")
+    @field:SerializedName("user")
     val contacts: DataUser
 )
 
@@ -79,6 +79,8 @@ data class ResponseLogin(
 
     @field:SerializedName("token")
     val token: String,
+    @field:SerializedName("role")
+    val role: String,
 
     @field:SerializedName("status")
     val status: String,

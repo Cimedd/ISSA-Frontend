@@ -62,4 +62,5 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation ("androidx.fragment:fragment-ktx:1.5.0")
+    implementation ("androidx.biometric:biometric:1.1.0") // Or latest
 }

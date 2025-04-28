@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
 import com.example.myapplication.dataclass.DataTransaction
+import com.example.myapplication.network.TransactionsItem
 import com.example.myapplication.ui.viewmodel.HomeVMF
 import com.example.myapplication.ui.viewmodel.HomeViewModel
 import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -51,12 +53,12 @@ class DetailTopupActivity : AppCompatActivity() {
             finish()
         }
 
-        val transaction = intent.getParcelableExtra<DataTransaction>("transaction")
-        val detail = SecurityUtil.decryptTransaction(transaction?.detail ?: "")
+        val transaction = intent.getParcelableExtra<TransactionsItem>("transaction")
+        val detail = SecurityUtil.decryptTransaction(transaction?.details ?: "")
 
         txtAmount.text = transaction?.amount.toString()
         txtProduct.text = detail.referenceCode
-        txtDate.text  = transaction?.createdAt
+        txtDate.text  = Utility.formatDateTime(transaction?.createdAt ?: "")
         txtStatus.text = transaction?.status
 
     }

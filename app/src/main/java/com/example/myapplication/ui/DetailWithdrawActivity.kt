@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.network.TransactionsItem
+import com.example.myapplication.util.SecurityUtil
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -39,9 +42,19 @@ class DetailWithdrawActivity : AppCompatActivity() {
         txtId = findViewById(R.id.txtId)
         sessionManager = SessionManager(this)
 
+        val transaction = intent.getParcelableExtra<TransactionsItem>("transaction")
+        val detail = SecurityUtil.decryptTransaction(transaction?.details ?: "")
+        Log.d("DECRYPT", detail.toString())
+
         btnBack.setOnClickListener {
             finish()
         }
+//
+//        txtId.text = detail.referenceCode
+//        txtDate.text = Utility.formatDateTime(transaction?.createdAt ?: "")
+//        txtRek.text = detail.accountNumber
+//        txtAmount.text = transaction?.amount.toString()
+//        txtStatus.text = transaction?.status
 
 //        requestDetailWithdraw(this)
     }

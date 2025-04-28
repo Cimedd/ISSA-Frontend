@@ -5,16 +5,22 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.TransactionDetail
 import com.example.myapplication.network.Result
 import com.example.myapplication.ui.viewmodel.HomeVMF
 import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.BiometricUtil
+import com.example.myapplication.util.SecurityUtil
 import com.example.myapplication.util.TransactionType
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -33,6 +39,8 @@ class DepositActivity : AppCompatActivity() {
     private lateinit var btnMethod: RelativeLayout
     private lateinit var metodeIcon: ImageView
     private lateinit var metodeName: TextView
+    private lateinit var cbBio : CheckBox
+    private lateinit var txtPin : EditText
     private val homeVM by viewModels<HomeViewModel>{
         HomeVMF.getInstance(this)
     }
@@ -44,6 +52,8 @@ class DepositActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
         metodeIcon = findViewById(R.id.metodeIcon)
         metodeName = findViewById(R.id.txtMetode)
+        cbBio = findViewById(R.id.cbBio)
+        txtPin = findViewById(R.id.txtPin)
 
         // set metode value
         val metode = sessionManager.getMetode()
@@ -94,7 +104,52 @@ class DepositActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        var isFinger = false
+        cbBio.setOnClickListener {
+            if (cbBio.isChecked) {
+                if(BiometricUtil.isBiometricAvailable(this)){
+                    txtPin.isVisible = false
+                    isFinger = true
+                }
+                else{
+                    cbBio.isChecked = false
+                    Toast.makeText(this, "No Biometric Available", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                txtPin.isVisible = true
+                isFinger = true
+            }
+        }
+
+        homeVM.result.observe(this){
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            when(it){
+                is Result.Error -> {
+                    alertDialogBuilder.setTitle("Transfer Failed")
+                    alertDialogBuilder.setMessage(it.error)
+                    alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                    }
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
+                }
+                Result.Loading -> {}
+                is Result.Success -> {
+                    alertDialogBuilder.setTitle("Transfer Successful")
+                    alertDialogBuilder.setMessage("Money Successfully Transfered")
+                    alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                        val intent = Intent(this, BerhasilActivity::class.java)
+                        intent.putExtra("title", "Deposit Berhasil")
+                        intent.putExtra("amount", editAmount.text.toString())
+                        startActivity(intent)
+                    }
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
+                }
+            }
+        }
+
         btnLanjut.setOnClickListener {
+            val detail = SecurityUtil.encryptTransaction(TransactionDetail(accountNumber = "rekening", bankId = "1", referenceCode = Utility.generateTransactionCode() ))
             val metode = sessionManager.getMetode()
             val code = metode["code"]
 
@@ -108,29 +163,29 @@ class DepositActivity : AppCompatActivity() {
                 editAmount.requestFocus()
                 return@setOnClickListener
             } else {
-                homeVM.doTransaction( type =  TransactionType.DEPOSIT.toString(), status = "success", amount = editAmount.text.toString()
-                    .toInt(), detail = "").observe(this){
-                        when(it){
-                            is Result.Error -> {
-
-                            }
-                            Result.Loading -> {}
-                            is Result.Success -> {
-                                val intent = Intent(this@DepositActivity, CheckOutActivity::class.java)
-//                                    intent.putExtra("id", data.getString("_id"))
-//                                    intent.putExtra("reference", data.getString("reference"))
-//                                    intent.putExtra("merchant_ref", data.getString("merchant_ref"))
-                                    startActivity(intent)
-                            }
-                        }
+                if(isFinger){
+                BiometricUtil.showBiometricPrompt(
+                    activity = this,
+                    onSuccess = {
+                        homeVM.doTransaction(type = TransactionType.DEPOSIT.toString(),
+                            status = "success", amount = editAmount.text.toString().toInt(), detail = detail)
+                    },
+                    onError = {
+                        Toast.makeText(this, "Failed to verify!", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+                    else{
+                      homeVM.doTransaction(type = TransactionType.DEPOSIT.toString(),
+                        status = "success", amount = editAmount.text.toString().toInt(), detail = detail, pin = txtPin.text.toString() )
+                    }
                 }
             }
         }
-    }
+
 
     override fun onResume() {
         super.onResume()
-        // set metode value
         val metode = sessionManager.getMetode()
         metodeName.text = metode["name"]
         Picasso.get().load(metode["icon"]).into(metodeIcon)

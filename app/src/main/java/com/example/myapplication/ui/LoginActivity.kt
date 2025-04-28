@@ -41,7 +41,15 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             Log.d("Token", settingVM.getUser())
            if(settingVM.checkUser()){
-               moveToMain()
+               if(settingVM.getRole() == "user"){
+                   moveToMain()
+               }
+               else{
+                   val intent = Intent(this@LoginActivity, ActivityAdminMain::class.java)
+                   startActivity(intent)
+                   finish()
+               }
+
            }
         }
         inputHp = findViewById(R.id.txtNoHp)
@@ -65,11 +73,11 @@ class LoginActivity : AppCompatActivity() {
                 inputPassword.error = "Password tidak boleh kosong"
                 inputPassword.requestFocus()
             } else {
-                settingVM.login(inputHp.text.toString(),SecurityUtil.sha256(inputPassword.text.toString()) ).observe(this){
+                settingVM.login(inputHp.text.toString(),inputPassword.text.toString() ).observe(this){
                     when(it){
                         is Result.Error -> {
                             val alertDialogBuilder = AlertDialog.Builder(this)
-                            if (it.error == ""){
+                            if (it.error == "Email not verified. Please check your inbox"){
                                 alertDialogBuilder.setTitle("Register Successful")
                                 alertDialogBuilder.setMessage("Check your email to verify the account")
                                 alertDialogBuilder.setPositiveButton("OK") { _, _ ->

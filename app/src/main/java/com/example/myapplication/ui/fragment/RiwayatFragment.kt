@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 //import com.androidnetworking.AndroidNetworking
@@ -57,13 +58,14 @@ class RiwayatFragment : Fragment() {
         lifecycleScope.launch {
             userID = settingVM.getUser()
         }
-//        getTransactions()
+        homeVM.getHistory()
         swipe.setOnRefreshListener {
             dataRiwayat.clear()
-//            getTransactions()
+            homeVM.getHistory()
             swipe.isRefreshing = false
         }
 
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         homeVM.transaction.observe(requireActivity()){
             when(it){
                 is Result.Error -> {
@@ -74,7 +76,7 @@ class RiwayatFragment : Fragment() {
                 }
                 is Result.Success -> {
                     recyclerView.adapter =
-                        it.data?.let { it -> AdapterRiwayat(requireActivity(), it, userID) }
+                        it.data?.let { AdapterRiwayat(requireActivity(), it, userID) }
                 }
             }
         }

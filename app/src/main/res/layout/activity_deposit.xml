@@ -204,6 +204,29 @@
             android:src="@drawable/ic_arrow_right" />
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/cbBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="use fingerprint?" />
+
+        <EditText
+            android:id="@+id/txtPin"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_stroke_primary"
+            android:hint="PIN"
+            android:paddingStart="12sp"
+            android:textColorHint="#2C2B54"
+            android:textSize="14sp" />
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
@@ -20,6 +24,7 @@ import com.example.myapplication.dataclass.TransactionDetail
 import com.example.myapplication.network.Result
 import com.example.myapplication.ui.viewmodel.HomeVMF
 import com.example.myapplication.ui.viewmodel.HomeViewModel
+import com.example.myapplication.util.BiometricUtil
 import com.example.myapplication.util.SecurityUtil
 import com.example.myapplication.util.TransactionType
 import com.example.myapplication.util.Utility
@@ -36,6 +41,8 @@ class PembayaranActivity : AppCompatActivity() {
     private lateinit var btnBayar: Button
     private lateinit var sessionManager: SessionManager
     private lateinit var txtKet: TextView
+    private lateinit var cbBio : CheckBox
+    private lateinit var txtPin : EditText
 
     private val homeVM by viewModels<HomeViewModel>{
         HomeVMF.getInstance(this)
@@ -63,6 +70,53 @@ class PembayaranActivity : AppCompatActivity() {
             finish()
         }
 
+        val detail = SecurityUtil.encryptTransaction(TransactionDetail(accountNumber = editReceiver.text.toString(), bankId = "1", referenceCode ="code" ))
+
+        var isFinger = false
+        cbBio.setOnClickListener {
+            if (cbBio.isChecked) {
+                if(BiometricUtil.isBiometricAvailable(this)){
+                    txtPin.isVisible = false
+                    isFinger = true
+                }
+                else{
+                    cbBio.isChecked = false
+                    Toast.makeText(this, "No Biometric Available", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                txtPin.isVisible = true
+                isFinger = true
+            }
+        }
+
+        homeVM.result.observe(this){
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            when(it){
+                is Result.Error -> {
+                    alertDialogBuilder.setTitle("TopUp Failed")
+                    alertDialogBuilder.setMessage(it.error)
+                    alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                    }
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
+                }
+                Result.Loading -> {}
+                is Result.Success -> {
+                    alertDialogBuilder.setTitle("TopUp Successful")
+                    alertDialogBuilder.setMessage("Money Successfully Transfered")
+                    alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                        val intent = Intent(this, BerhasilActivity::class.java)
+                        intent.putExtra("title", "TopUp Berhasil")
+                        intent.putExtra("amount", txtHarga.text.toString())
+                        startActivity(intent)
+                    }
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
+                }
+            }
+        }
+
+
 
         btnBayar.setOnClickListener {
             val receiver = editReceiver.text.toString().trim()
@@ -73,18 +127,21 @@ class PembayaranActivity : AppCompatActivity() {
                 editReceiver.requestFocus()
                 return@setOnClickListener
             } else {
-                homeVM.doTransaction(type = TransactionType.TOP_UP.value, status = "success", amount = txtHarga.text.toString().toInt() , detail = encrypt ).observe(this
-                ){
-                    when(it){
-                        is Result.Error -> TODO()
-                        Result.Loading -> TODO()
-                        is Result.Success -> {
-                            val intent = Intent(this, BerhasilActivity::class.java)
-                            intent.putExtra("title", "Topup Berhasil")
-                            intent.putExtra("amount", txtHarga.text.toString().toInt())
-                            startActivity(intent)
+                if(isFinger){
+                    BiometricUtil.showBiometricPrompt(
+                        activity = this,
+                        onSuccess = {
+                            homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
+                                status = "success", amount = txtHarga.text.toString().toInt(), detail = "detail" )
+                        },
+                        onError = {
+                            Toast.makeText(this, "Failed to verify!", Toast.LENGTH_SHORT).show()
                         }
-                    }
+                    )
+                }
+                else{
+                    homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
+                        status = "success", amount = txtHarga.text.toString().toInt(), detail = "detail", pin = txtPin.text.toString() )
                 }
             }
 

@@ -107,12 +107,10 @@ class HomeFragment: Fragment() {
             startActivity(intent)
         }
 
-
         btnWithdraw.setOnClickListener {
             val intent = Intent(activity, TarikTunaiActivity::class.java)
             startActivity(intent)
         }
-
 
         btnTransfer.setOnClickListener {
             val intent = Intent(activity, Transfer1Activity::class.java)
@@ -125,7 +123,7 @@ class HomeFragment: Fragment() {
             homeVM.getHistory()
         }
 
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         generateMenus()
 
@@ -138,21 +136,21 @@ class HomeFragment: Fragment() {
             when(it){
                 is Result.Error -> {
                     stopShimmer()
-                    txtName.text = "Halo, " + "!"
+                    txtName.text = "Halo, guess !"
                     txtSaldo.text = Utility.moneyFormat(0)
                     Toast.makeText(requireActivity(), it.error, Toast.LENGTH_SHORT).show()
                     Log.d("error", it.error + "user")
                 }
                 Result.Loading -> {
                     startShimmer()
-                    txtName.text = "Halo, " + "!"
+                    txtName.text = "Halo, guest !"
                     txtSaldo.text = Utility.moneyFormat(0)
                 }
                 is Result.Success -> {
                     stopShimmer()
                     txtName.text =  "Halo, " + it.data.name + "!"
+                    Toast.makeText(requireActivity(), it.data.name, Toast.LENGTH_SHORT).show()
                     txtSaldo.text = Utility.moneyFormat(it.data.saldo)
-
                 }
             }
         }

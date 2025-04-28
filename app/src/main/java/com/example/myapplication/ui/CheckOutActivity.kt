@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataTransaction
+import com.example.myapplication.network.TransactionsItem
+import com.example.myapplication.util.SecurityUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -51,12 +54,23 @@ class CheckOutActivity : AppCompatActivity() {
         btnPay = findViewById(R.id.btnPay)
         iconCopy = findViewById(R.id.iconCopy)
 
+        val transaction = intent.getParcelableExtra<TransactionsItem>("transaction")
+        val detail = SecurityUtil.decryptTransaction(transaction?.details ?: "")
+
+        txtReference.text = detail.referenceCode
+        txtDate.text = transaction?.createdAt
+        txtStatus.text = transaction?.status
+        txtMethod.text = "BRI"
+        txtRek.text = detail.accountNumber
+
         btnBack.setOnClickListener {
             finish()
         }
 
         btnPay.setOnClickListener {
-//            checkStatus()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         iconCopy.setOnClickListener {
@@ -73,7 +87,7 @@ class CheckOutActivity : AppCompatActivity() {
                 .show()
         }
 
-//        getDetailDeposit()
+
 
     }
 

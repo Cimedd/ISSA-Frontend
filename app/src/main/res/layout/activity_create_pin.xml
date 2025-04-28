@@ -50,7 +50,7 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/bg_stroke_primary"
             android:hint="Pin"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:paddingStart="12sp"
             android:textColorHint="@color/primary"
             android:textSize="14sp" />
@@ -61,7 +61,7 @@
             android:layout_height="45dp"
             android:background="@drawable/bg_stroke_primary"
             android:hint="Confirm Pin"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:paddingStart="12sp"
             android:textColorHint="@color/primary"
             android:textSize="14sp" />

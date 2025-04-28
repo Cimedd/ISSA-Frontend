@@ -7,12 +7,19 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 //import com.androidnetworking.AndroidNetworking
 //import com.androidnetworking.common.Priority
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataRegis
+import com.example.myapplication.network.Result
+import com.example.myapplication.ui.viewmodel.SettingVMF
+import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
 
@@ -23,6 +30,11 @@ class CreatePinActivity: AppCompatActivity() {
     private lateinit var btnFinish: Button
     private lateinit var contextView: ImageView
 
+    private val settingVM by viewModels<SettingViewModel>{
+        SettingVMF.getInstance(this)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_pin)
@@ -32,6 +44,8 @@ class CreatePinActivity: AppCompatActivity() {
         btnFinish = findViewById(R.id.btnFinish)
         btnLogin = findViewById(R.id.btnLogin)
         contextView = findViewById(R.id.view)
+
+        val regis = intent.getParcelableExtra<DataRegis>("register")
 
         btnLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -46,11 +60,34 @@ class CreatePinActivity: AppCompatActivity() {
             if (password != confirmPassword) {
                 inputConfirmPassword.error = "Password tidak sama"
                 inputConfirmPassword.requestFocus()
-            } else if(password.length < 8) {
+            } else if(password.length < 6) {
                 inputPassword.error = "Password minimal 8 karakter"
                 inputPassword.requestFocus()
             } else {
-//                register(password)
+                settingVM.register(regis?.email ?: "",
+                    regis?.name ?:"",
+                    regis?.password ?: "",
+                    regis?.phoneNumber ?: "",
+                    inputPassword.text.toString()
+                    ).observe(this){
+                    when(it){
+                        is Result.Error -> {
+                            Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()}
+                        Result.Loading -> {}
+                        is Result.Success ->{
+                            val alertDialogBuilder = AlertDialog.Builder(this)
+                            alertDialogBuilder.setTitle("Register Successful")
+                            alertDialogBuilder.setMessage("Check your email to verify the account")
+                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
+                                val intent = Intent(this, LoginActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                            val alertDialog = alertDialogBuilder.create()
+                            alertDialog.show()
+                        }
+                    }
+                }
             }
         }
     }

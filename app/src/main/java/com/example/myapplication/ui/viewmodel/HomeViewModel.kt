@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,12 +24,14 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
     private val _provider = MutableLiveData<Result<List<DataProvider>>>()
     val provider : LiveData<Result<List<DataProvider>>> = _provider
 
-
     private val _product = MutableLiveData<Result<List<DataProduct>>>()
     val product : LiveData<Result<List<DataProduct>>> = _product
 
     private val _transaction = MutableLiveData<Result<List<TransactionsItem?>?>>()
     val transaction : LiveData<Result<List<TransactionsItem?>?>> = _transaction
+
+    private val _result = MutableLiveData<Result<String>>()
+    val result : LiveData<Result<String>> = _result
 
     fun getHistory(){
         viewModelScope.launch {
@@ -86,7 +89,7 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
     fun getSaldo() = liveData {
         emit(Result.Loading)
         try {
-            val response = repo.getUserData()
+            val response = repo.getUserSaldo()
             if(response.status == "success"){
                 emit(Result.Success(response.contacts))
             }
@@ -99,19 +102,21 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
         }
     }
 
-    fun doTransaction(type : String, status : String, amount : Int, receiverId : String? = null, detail : String) = liveData {
-        emit(Result.Loading)
-        try {
-            val response = repo.makeTransaction(type,status,amount, receiverId, detail)
-            if(response.status == "success"){
-                emit(Result.Success(response.message))
+    fun doTransaction(type : String, status : String, amount : Int, receiverId : String? = null, detail : String, pin : String = "") {
+        viewModelScope.launch {
+            _result.value = Result.Loading
+            try {
+                val response = repo.makeTransaction(type,status,amount, receiverId, detail, pin)
+                if(response.status == "success"){
+                    _result.value = Result.Success(response.message)
+                }
+                else{
+                    _result.value = Result.Error(response.message)
+                }
             }
-            else{
-                emit(Result.Error( response.message ))
+            catch (e : Exception){
+                _result.value = Result.Error( e.message ?: "Unknown error")
             }
-        }
-        catch (e : Exception){
-            emit(Result.Error( e.message ?: "Unknown error"))
         }
     }
 
@@ -156,6 +161,7 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
             val response = repo.getUserData()
             if(response.status == "success"){
                 emit(Result.Success(response.contacts))
+                Log.d("Data", response.contacts.toString())
             }
             else{
                 emit(Result.Error( response.message ))
@@ -169,5 +175,6 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
     suspend fun logout(){
         repo.logout()
     }
+
 
 }

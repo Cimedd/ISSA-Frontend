@@ -13,8 +13,6 @@ import com.google.gson.Gson
 object SecurityUtil {
 
     private const val AES_MODE = "AES/GCM/NoPadding"
-    private const val IV_SIZE = 12
-    private const val TAG_LENGTH = 128 // Recommended IV size for GCM
     private val gson = Gson()
 
     fun encrypt(plainText: String, secretKey: SecretKey): String {
@@ -27,7 +25,7 @@ object SecurityUtil {
         val encryptedBytes = cipher.doFinal(plainText.toByteArray(Charsets.UTF_8))
 
         // Get the IV that was generated during encryption
-        val iv = cipher.iv // This is automatically generated
+        val iv = cipher.iv
         Log.d("IV ENC", Base64.encodeToString(iv, Base64.DEFAULT))
 
         // Combine the IV and encrypted data

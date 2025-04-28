@@ -29,8 +29,18 @@ class ApiRepo(private val api : ApiService) {
         return api.getAllTransaction()
     }
 
-    suspend fun makeTransaction(type : String, status : String, amount : Int, receiverId : String? = null, detail : String) : ResponseStatus{
-        val body = mapOf("type" to type, "status" to status, "amount" to amount.toString(), "receiver_id" to receiverId, "details" to  detail)
+    suspend fun updateUser(){
+
+    }
+
+    suspend fun makeTransaction(type : String, status : String, amount : Int, receiverId : String? = null, detail : String, pin : String) : ResponseStatus{
+       var body : Map<String,String?> = emptyMap()
+        if(pin != ""){
+            body = mapOf("type" to type, "status" to status, "amount" to amount.toString(), "receiver_id" to receiverId, "details" to  detail)
+        }
+        else{
+            body = mapOf("type" to type, "status" to status, "amount" to amount.toString(), "receiver_id" to receiverId, "details" to  detail, "pin" to pin)
+        }
          return api.makeTransaction(body)
     }
 

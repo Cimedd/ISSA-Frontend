@@ -25,7 +25,7 @@ data class DataUser(
     @field:SerializedName("point")
     val point: Int,
     @field:SerializedName("email")
-    val email: Int,
+    val email: String,
 )
 @Parcelize
 data class Transaction(
@@ -37,4 +37,16 @@ data class Transaction(
     val amount: Int,
     @field:SerializedName("receiver_id")
     val recId: Int? = null
+):Parcelable
+
+@Parcelize
+data class DataRegis(
+    @field:SerializedName("name")
+    val name : String,
+    @field:SerializedName("phone_number")
+    val phoneNumber: String,
+    @field:SerializedName("email")
+    val email: String,
+    @field:SerializedName("password")
+    val password: String,
 ):Parcelable

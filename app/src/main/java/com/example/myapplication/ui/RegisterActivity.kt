@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.dataclass.DataRegis
 import com.example.myapplication.network.Result
 import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
@@ -57,31 +58,21 @@ class RegisterActivity : AppCompatActivity() {
             } else if(inputHp.text.toString().isEmpty()) {
                 inputHp.error = "No HP tidak boleh kosong"
                 inputHp.requestFocus()
-            } else {
+            }
+            else if(inputPassword.text.toString().length < 6){
+                inputPassword.error = "Panjang password minimal 6"
+                inputPassword.requestFocus()
+            }
+            else {
                 val nama = inputNama.text.toString().trim()
                 val email = inputEmail.text.toString().trim()
                 val hp = inputHp.text.toString().trim()
                 val pass = inputPassword.text.toString().trim()
+                val regis = DataRegis(nama,hp,email,pass)
 
-                settingVM.register(nama,email,SecurityUtil.sha256(pass),hp).observe(this){
-                    when(it){
-                        is Result.Error -> {
-                            Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()}
-                        Result.Loading -> {}
-                        is Result.Success ->{
-                            val alertDialogBuilder = AlertDialog.Builder(this)
-                            alertDialogBuilder.setTitle("Register Successful")
-                            alertDialogBuilder.setMessage("Check your email to verify the account")
-                            alertDialogBuilder.setPositiveButton("OK") { _, _ ->
-                                val intent = Intent(this, LoginActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            val alertDialog = alertDialogBuilder.create()
-                            alertDialog.show()
-                        }
-                    }
-                }
+                val intent = Intent(this, CreatePinActivity::class.java)
+                intent.putExtra("register", regis)
+                startActivity(intent)
             }
         }
     }

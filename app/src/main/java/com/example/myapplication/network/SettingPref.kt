@@ -16,12 +16,15 @@ class SettingPref private constructor(private val dataStore: DataStore<Preferenc
     private val token = stringPreferencesKey("token")
     private val name = stringPreferencesKey(
         "name")
+    private val role = stringPreferencesKey(
+        "role")
 
     suspend fun loggedIn(user : String, tokens: String, names : String){
         dataStore.edit { preferences  ->
             preferences[userId] = user
             preferences[token] = tokens
             preferences[name] = names
+            preferences[role] = ""
         }
     }
 
@@ -30,12 +33,19 @@ class SettingPref private constructor(private val dataStore: DataStore<Preferenc
             preferences[userId] = ""
             preferences[token] = ""
             preferences[name] = ""
+            preferences[role] = ""
         }
     }
 
     fun getToken():Flow<String>{
         return dataStore.data.map { preferences ->
             preferences[token] ?: ""
+        }
+    }
+
+    fun getRole():Flow<String>{
+        return dataStore.data.map { preferences ->
+            preferences[role] ?: ""
         }
     }
 

@@ -12,13 +12,17 @@ class SettingRepo(private val api: ApiService, private val settingPref: SettingP
         return api.login(body)
     }
 
-    suspend fun register(name: String, email : String, password : String, phone : String): ResponseStatus{
-        val body = mapOf("name" to name, "email" to email, "password" to password, "phone_number" to phone)
+    suspend fun register(name: String, email : String, password : String, phone : String, pin : String): ResponseStatus{
+        val body = mapOf("name" to name, "email" to email, "password" to password, "phone_number" to phone, "pin" to pin)
         return api.register(body)
     }
 
     suspend fun logout(){
         settingPref.loggedOut()
+    }
+
+    suspend fun getRole() : String{
+        return settingPref.getRole().firstOrNull() ?: ""
     }
 
     suspend fun getID() : String{

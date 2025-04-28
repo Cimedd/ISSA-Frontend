@@ -24,10 +24,10 @@ class SettingViewModel(private val repo : SettingRepo): ViewModel() {
         }
     }
 
-    fun register(email : String, username : String, password : String, phone : String) = liveData{
+    fun register(email : String, username : String, password : String, phone : String, pin : String) = liveData{
         emit(Result.Loading)
         try {
-            val response = repo.register(email,username,password, phone)
+            val response = repo.register(username,email,password, phone, pin)
             if(response.status == "success"){
                 emit(Result.Success(response))
             }else {
@@ -58,5 +58,9 @@ class SettingViewModel(private val repo : SettingRepo): ViewModel() {
 
     suspend fun sendVerif(email : String){
         repo.sendVerif(email)
+    }
+
+    suspend fun getRole() : String{
+        return repo.getRole()
     }
 }

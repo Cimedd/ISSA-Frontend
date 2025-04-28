@@ -17,6 +17,7 @@ import com.example.myapplication.ui.DetailTopupActivity
 import com.example.myapplication.ui.DetailTransferActivity
 import com.example.myapplication.ui.DetailWithdrawActivity
 import com.example.myapplication.ui.SessionManager
+import com.example.myapplication.util.Utility
 import java.text.DecimalFormat
 
 @SuppressLint("RecyclerView")
@@ -33,18 +34,12 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
         val currentItem = riwayatList[position]
         val decimalFormat = DecimalFormat("#,###")
 
-        // format date to dd-mm-yyyy HH:mm
-        val date = currentItem?.createdAt;
+        val date = Utility.formatDateOnly(currentItem?.createdAt ?: "")
 
-        holder.txtType.text = currentItem?.type
+        holder.txtType.text =  Utility.capitalizeFirstLetter(currentItem?.type ?: "")
         holder.txtAmount.text = "Rp " + decimalFormat.format(currentItem?.amount).toString()
-        holder.txtDate.text = date.toString()
+        holder.txtDate.text = date
         holder.txtStatus.text = currentItem?.status
-
-        // load icon
-//        Picasso.get()
-//            .load(currentItem.icon)
-//            .into(holder.icon)
 
         // check if status is success
         when(currentItem?.status) {
@@ -55,13 +50,13 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
 
         holder.itemView.setOnClickListener {
             when (currentItem?.type) {
-                "Deposit" -> {
+                "deposit" -> {
                     holder.icon.setImageResource(R.drawable.deposit2)
                     val intent = Intent(context, CheckOutActivity::class.java)
                     intent.putExtra("transaction", currentItem)
                     startActivity(context, intent, null)
                 }
-                "Transfer" -> {
+                "transfer" -> {
                     if (currentItem.userId.toString() != id){
                         holder.icon.setImageResource(R.drawable.ic_uang_masuk)
                     } else{
@@ -72,13 +67,13 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
                     intent.putExtra("transaction", currentItem)
                     startActivity(context, intent, null)
                 }
-                "Withdraw" -> {
+                "withdraw" -> {
                     holder.icon.setImageResource(R.drawable.withdraw2)
                     val intent = Intent(context, DetailWithdrawActivity::class.java)
                     intent.putExtra("transaction", currentItem)
                     startActivity(context, intent, null)
                 }
-                "Topup" -> {
+                "topup" -> {
                     holder.icon.setImageResource(R.drawable.voucher)
                     val intent = Intent(context, DetailTopupActivity::class.java)
                     intent.putExtra("transaction", currentItem)
