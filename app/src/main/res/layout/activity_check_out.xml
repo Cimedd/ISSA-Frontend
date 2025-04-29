@@ -52,6 +52,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_primary"
                 android:gravity="center"
+                android:text="24 April 2024"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -79,12 +80,13 @@
                     android:id="@+id/txtRek"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/icon"
                     android:layout_marginStart="10dp"
-                    android:textColor="@color/primary" />
+                    android:layout_toRightOf="@+id/icon"
+                    android:text="0812345657"
+                    android:textColor="@color/primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/iconCopy"
@@ -113,10 +115,11 @@
                 android:id="@+id/txtReference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:layout_marginTop="3dp"
+                android:text="TXN_1233435"
                 android:textColor="@color/primary"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -129,10 +132,11 @@
                 android:id="@+id/txtAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:layout_marginTop="3dp"
+                android:text="Rp 100,000"
                 android:textColor="@color/primary"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -145,10 +149,11 @@
                 android:id="@+id/txtMethod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:layout_marginTop="3dp"
+                android:text="BRI"
                 android:textColor="@color/primary"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -161,10 +166,11 @@
                 android:id="@+id/txtStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:layout_marginTop="3dp"
-                android:textColor="@color/red"
-                android:textSize="16sp"/>
+                android:text="Success"
+                android:textColor="@color/primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"

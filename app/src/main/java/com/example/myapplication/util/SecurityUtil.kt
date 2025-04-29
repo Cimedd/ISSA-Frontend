@@ -38,7 +38,7 @@ object SecurityUtil {
     fun decrypt(encryptedData: String, secretKey: SecretKey): String {
         val decoded = Base64.decode(encryptedData, Base64.DEFAULT)
 
-        // Extract the IV from the first part of the decoded data (first 16 bytes for AES GCM)
+        // Extract the IV from the first part of the decoded data (first 12 bytes for AES GCM)
         val iv = decoded.copyOfRange(0, 12)
         Log.d("IV DEC", Base64.encodeToString(iv, Base64.DEFAULT))
 

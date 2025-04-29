@@ -55,6 +55,7 @@ class PembayaranActivity : AppCompatActivity() {
         txtKet = findViewById(R.id.txtKet)
         txtHarga = findViewById(R.id.txtHargaProduk)
         txtNama = findViewById(R.id.txtNamaProvider)
+        cbBio = findViewById(R.id.cbBio)
 
 
         val product = intent.getParcelableExtra<DataProduct>("product")
@@ -64,8 +65,6 @@ class PembayaranActivity : AppCompatActivity() {
         btnBack.setOnClickListener {
             finish()
         }
-
-        val detail = SecurityUtil.encryptTransaction(TransactionDetail(accountNumber = editReceiver.text.toString(), bankId = "1", referenceCode ="code" ))
 
         var isFinger = false
         cbBio.setOnClickListener {
@@ -116,7 +115,7 @@ class PembayaranActivity : AppCompatActivity() {
         btnBayar.setOnClickListener {
             val receiver = editReceiver.text.toString().trim()
             val encrypt = SecurityUtil.encryptTransaction(TransactionDetail(accountNumber = receiver, referenceCode =
-            Utility.generateTransactionCode(), billType = "X"))
+            Utility.generateTransactionCode(), productId = product?.id.toString()))
             if(receiver.isEmpty()) {
                 editReceiver.error = "Penerima tidak boleh kosong"
                 editReceiver.requestFocus()
@@ -127,7 +126,7 @@ class PembayaranActivity : AppCompatActivity() {
                         activity = this,
                         onSuccess = {
                             homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
-                                status = "success", amount = txtHarga.text.toString().toInt(), detail = "detail" )
+                                status = "success", amount = txtHarga.text.toString().toInt(), detail = encrypt )
                         },
                         onError = {
                             Toast.makeText(this, "Failed to verify!", Toast.LENGTH_SHORT).show()
@@ -136,7 +135,7 @@ class PembayaranActivity : AppCompatActivity() {
                 }
                 else{
                     homeVM.doTransaction(type = TransactionType.WITHDRAW.toString(),
-                        status = "success", amount = txtHarga.text.toString().toInt(), detail = "detail", pin = txtPin.text.toString() )
+                        status = "success", amount = txtHarga.text.toString().toInt(), detail = encrypt, pin = txtPin.text.toString() )
                 }
             }
 

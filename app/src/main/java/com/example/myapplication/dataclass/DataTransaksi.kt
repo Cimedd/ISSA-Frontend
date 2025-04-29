@@ -31,18 +31,13 @@ data class DataTransaction(
     val detail: String
 ):Parcelable
 
-data class TransactionDetail(
-    val senderId: String? = null,         // For user transfers
-    @SerializedName("receiverId")
-    val receiverId: String? = null,       // For user transfers
+data class TransactionDetail(   
     @SerializedName("bankId")
     val bankId: String? = null,           // For bank-based transactions
     @SerializedName("accountNumber")
     val accountNumber: String? = null,    // For withdrawals
     @SerializedName("productId")
     val productId: String? = null,        // For top-up or voucher
-    @SerializedName("billType")
-    val billType: String? = null,         // For bill payment type (e.g., PLN, PDAM) // User ID for the bill system
     @SerializedName("referenceCode")
     val referenceCode: String? = null,    // Invoice or payment proof
     @SerializedName("note")

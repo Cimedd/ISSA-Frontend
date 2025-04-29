@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -75,6 +76,7 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
                 val response = repo.getProvider(id)
                 if(response.status == "success"){
                     _provider.value = Result.Success(response.provider)
+                    Log.d("SUCCESS", "PROVIDER")
                 }
                 else{
                     _provider.value = Result.Error( response.message )

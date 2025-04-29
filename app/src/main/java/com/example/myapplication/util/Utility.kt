@@ -9,7 +9,7 @@ import java.util.TimeZone
 object Utility {
 
     const val local = "10.0.2.2"
-    const val networks = "13e7-2001-448a-50e2-3b18-7d1f-d142-9aeb-d5f9.ngrok-free.app"
+    const val networks = "190c-2001-448a-50e2-3b18-7d1f-d142-9aeb-d5f9.ngrok-free.app"
     fun moneyFormat(amount : Int) : String{
         val localeID = Locale("in", "ID")
         val format = NumberFormat.getNumberInstance(localeID)

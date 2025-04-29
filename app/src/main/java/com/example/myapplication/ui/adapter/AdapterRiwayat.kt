@@ -3,6 +3,8 @@ package com.example.myapplication.ui.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,12 +34,10 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = riwayatList[position]
-        val decimalFormat = DecimalFormat("#,###")
 
         val date = Utility.formatDateOnly(currentItem?.createdAt ?: "")
 
         holder.txtType.text =  Utility.capitalizeFirstLetter(currentItem?.type ?: "")
-        holder.txtAmount.text = "Rp " + decimalFormat.format(currentItem?.amount).toString()
         holder.txtDate.text = date
         holder.txtStatus.text = currentItem?.status
 
@@ -47,10 +47,37 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
             "pending" -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.orange))
             else -> holder.txtStatus.setTextColor(context.resources.getColor(R.color.red))
         }
+        holder.icon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
+
+
+        when(currentItem?.type){
+            "deposit" -> {
+                holder.txtAmount.text = "+ Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
+                holder.icon.setImageResource(R.drawable.deposit2)
+            }
+            "transfer" -> {
+                if (currentItem.userId.toString() != id){
+                    holder.txtAmount.text = "+ Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
+                    holder.icon.setImageResource(R.drawable.ic_uang_masuk)
+                } else{
+                    holder.txtAmount.text = "- Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
+                    holder.icon.setImageResource(R.drawable.ic_uang_keluar)
+                }
+            }
+            "withdraw" -> {
+                holder.txtAmount.text = "- Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
+                holder.icon.setImageResource(R.drawable.withdraw2)
+            }
+            "topup" -> {
+                holder.icon.setImageResource(R.drawable.voucher)
+                holder.txtAmount.text = "-Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
+            }
+        }
 
         holder.itemView.setOnClickListener {
             when (currentItem?.type) {
                 "deposit" -> {
+                    holder.txtAmount.text = "+ Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
                     holder.icon.setImageResource(R.drawable.deposit2)
                     val intent = Intent(context, CheckOutActivity::class.java)
                     intent.putExtra("transaction", currentItem)
@@ -58,8 +85,10 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
                 }
                 "transfer" -> {
                     if (currentItem.userId.toString() != id){
+                        holder.txtAmount.text = "+ Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
                         holder.icon.setImageResource(R.drawable.ic_uang_masuk)
                     } else{
+                        holder.txtAmount.text = "- Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
                         holder.icon.setImageResource(R.drawable.ic_uang_keluar)
                     }
 
@@ -68,6 +97,7 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
                     startActivity(context, intent, null)
                 }
                 "withdraw" -> {
+                    holder.txtAmount.text = "- Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
                     holder.icon.setImageResource(R.drawable.withdraw2)
                     val intent = Intent(context, DetailWithdrawActivity::class.java)
                     intent.putExtra("transaction", currentItem)
@@ -75,6 +105,7 @@ class AdapterRiwayat(val context: Context, val riwayatList: List<TransactionsIte
                 }
                 "topup" -> {
                     holder.icon.setImageResource(R.drawable.voucher)
+                    holder.txtAmount.text = "-Rp " + Utility.moneyFormat(currentItem?.amount ?: 0)
                     val intent = Intent(context, DetailTopupActivity::class.java)
                     intent.putExtra("transaction", currentItem)
                     startActivity(context, intent, null)

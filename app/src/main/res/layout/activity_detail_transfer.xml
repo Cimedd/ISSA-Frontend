@@ -57,11 +57,11 @@
         android:id="@+id/txtSenderPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:text="BRI 082290764831"
+        android:text="082290764831"
         android:textColor="@color/primary"
-        android:textSize="14sp"
-        android:layout_gravity="center"/>
+        android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"

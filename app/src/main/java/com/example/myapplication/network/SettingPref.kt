@@ -19,12 +19,12 @@ class SettingPref private constructor(private val dataStore: DataStore<Preferenc
     private val role = stringPreferencesKey(
         "role")
 
-    suspend fun loggedIn(user : String, tokens: String, names : String){
+    suspend fun loggedIn(user : String, tokens: String, names : String, roles : String){
         dataStore.edit { preferences  ->
             preferences[userId] = user
             preferences[token] = tokens
             preferences[name] = names
-            preferences[role] = ""
+            preferences[role] = roles
         }
     }
 

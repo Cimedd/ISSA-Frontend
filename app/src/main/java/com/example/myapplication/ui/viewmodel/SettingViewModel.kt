@@ -13,7 +13,7 @@ class SettingViewModel(private val repo : SettingRepo): ViewModel() {
             val response = repo.login(username,password)
             if(response.status == "success"){
                 emit(Result.Success(response))
-                repo.saveToDataStore(response.userId, response.token, response.name)
+                repo.saveToDataStore(response.userId, response.token, response.name, response.role)
             }else {
                 val errorMessage = response.message
                 emit(Result.Error(errorMessage))

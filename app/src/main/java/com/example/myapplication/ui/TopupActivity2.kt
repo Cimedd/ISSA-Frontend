@@ -27,8 +27,6 @@ import org.json.JSONObject
 import java.text.DecimalFormat
 
 class TopupActivity2 : AppCompatActivity() {
-    private lateinit var image: ImageView
-    private lateinit var txtName: TextView
     private lateinit var btnBack: ImageView
     private lateinit var sessionManager: SessionManager
     private lateinit var recyclerView: RecyclerView
@@ -43,8 +41,6 @@ class TopupActivity2 : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerTopup)
         dataTopup = ArrayList<DataTopup>()
-        image = findViewById(R.id.image)
-        txtName = findViewById(R.id.txtName)
         sessionManager = SessionManager(this)
         btnBack = findViewById(R.id.btnBack)
 
@@ -55,6 +51,7 @@ class TopupActivity2 : AppCompatActivity() {
         val name = intent.getStringExtra("name")
         val  id = intent.getIntExtra("id",1)
 
+        recyclerView.layoutManager = LinearLayoutManager(this)
         homeVM.getProduct(id)
 
         homeVM.product.observe(this){
@@ -62,71 +59,12 @@ class TopupActivity2 : AppCompatActivity() {
                 is Result.Error -> {}
                 Result.Loading -> {}
                 is Result.Success -> {
-                    recyclerView.layoutManager = LinearLayoutManager(this)
                     recyclerView.adapter = AdapterTopup2(this, it.data)
                 }
             }
         }
 
-        txtName.text = name
-        Picasso.get().load(R.drawable.emoney).into(image)
-
-//        requestPrice(this, type, code, icon.toString())
 
     }
 
-//    private fun requestPrice(context: Context, type: String, code: String, icon: String) {
-//        val token = sessionManager.getToken()
-//
-//        AndroidNetworking.get("https://dompetku-api.vercel.app/api/product/$type/$code")
-//            .addHeaders("Authorization", "Bearer $token")
-//            .setTag("pricing")
-//            .setPriority(Priority.LOW)
-//            .build()
-//            .getAsJSONObject(object : JSONObjectRequestListener {
-//                override fun onResponse(response: JSONObject) {
-//                    Log.d("response", response.toString())
-//
-//                    val data: JSONArray = response.getJSONArray("data")
-//                    val decimalFormat = DecimalFormat("#,###")
-//
-//                    if(response.getString("success").equals("true")) {
-//                        for (i in 0 until data.length()) {
-//                            val item = data.getJSONObject(i)
-//                            val nominal = "Rp " + decimalFormat.format(item.getInt("product_price")).toString()
-//                            dataTopup.add(
-//                                DataTopup(
-//                                    item.getString("product_code"),
-//                                    item.getString("product_nominal") + " ($nominal)" ,
-//                                    item.getString("product_type"),
-//                                    icon
-//                                )
-//                            )
-//
-//                            recyclerView.layoutManager = LinearLayoutManager(context)
-//                            recyclerView.adapter = AdapterTopup2(context, dataTopup)
-//                        }
-//                    }
-//                }
-//
-//                override fun onError(error: ANError) {
-//                    val error = error.errorBody
-//                    val jsonObject = JSONObject(error)
-//
-//                    MaterialAlertDialogBuilder(this@TopupActivity2)
-//                        .setTitle("Gagal")
-//                        .setMessage(jsonObject.getString("message"))
-//                        .setPositiveButton("OK") { dialog, which ->
-//                            dialog.dismiss()
-//                        }
-//                        .show()
-//
-//                    if(jsonObject.getString("code").equals("401")) {
-//                        val intent = Intent(this@TopupActivity2, LoginActivity::class.java)
-//                        startActivity(intent)
-//                    }
-//                }
-//            })
-//
-//    }
 }

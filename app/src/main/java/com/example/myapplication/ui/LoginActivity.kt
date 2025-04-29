@@ -44,7 +44,6 @@ class LoginActivity : AppCompatActivity() {
                val role = settingVM.getRole()
                Log.d("role", role)
                if( role == "user"){
-
                    moveToMain()
                }
                else{
@@ -102,7 +101,6 @@ class LoginActivity : AppCompatActivity() {
                                 moveToMain()
                             }
                             else{
-
                                 val intent =
                                     Intent(this@LoginActivity, ActivityAdminMain::class.java)
                                 startActivity(intent)

@@ -35,7 +35,6 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
     private lateinit var btnBack: ImageView
     private lateinit var metodeIcon : ImageView
     private lateinit var metodeName : TextView
-    private lateinit var txtRekening : TextView
     private lateinit var txtSubtotal : TextView
     private lateinit var txtTotal : TextView
     private lateinit var btnLanjut: Button
@@ -57,7 +56,6 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
 
         metodeIcon = findViewById(R.id.metodeIcon)
         metodeName = findViewById(R.id.metodeName)
-        txtRekening = findViewById(R.id.txtRekening)
         txtSubtotal = findViewById(R.id.txtSubtotal)
         txtTotal = findViewById(R.id.txtTotal)
         btnLanjut = findViewById(R.id.btnLanjut)
@@ -152,46 +150,9 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
         val amount = intent.getStringExtra("amount")
         val rekening = intent.getStringExtra("rekening")
 
-        txtRekening.text = rekening
+        metodeName.text = rekening
         txtSubtotal.text = "Rp " + decimalFormat.format(amount?.toInt()).toString()
         txtTotal.text = "Rp " + decimalFormat.format(amount?.toInt()?.minus(2500)).toString()
     }
 
-//    private fun requestWithdraw(rekening: String, amount: String) {
-//        val token = sessionManager.getToken()
-//
-//        AndroidNetworking.post("https://dompetku-api.vercel.app/api/transaction/withdraw")
-//            .setTag("withdraw")
-//            .setPriority(Priority.MEDIUM)
-//            .addBodyParameter("amount", amount)
-//            .addBodyParameter("rekening", rekening)
-//            .addHeaders("Authorization", "Bearer $token")
-//            .build()
-//            .getAsJSONObject(object : JSONObjectRequestListener {
-//                override fun onResponse(response: JSONObject) {
-//                    Log.d("response", response.toString())
-//                    if (response.getString("success").equals("true")) {
-//
-//                    }
-//                }
-//
-//                override fun onError(error: ANError) {
-//                    val error = error.errorBody
-//                    val jsonObject = JSONObject(error)
-//
-//                    MaterialAlertDialogBuilder(this@KonfirmasiTarikTunaiActivity)
-//                        .setTitle("Gagal")
-//                        .setMessage(jsonObject.getString("message"))
-//                        .setPositiveButton("OK") { dialog, which ->
-//                            dialog.dismiss()
-//                        }
-//                        .show()
-//
-//                    if(jsonObject.getString("code").equals("401")) {
-//                        val intent = Intent(this@KonfirmasiTarikTunaiActivity, LoginActivity::class.java)
-//                        startActivity(intent)
-//                    }
-//                }
-//            })
-//    }
 }

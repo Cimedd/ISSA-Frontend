@@ -3,6 +3,7 @@ package com.example.myapplication.ui.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,7 @@ import com.squareup.picasso.Picasso
 @SuppressLint("RecyclerView")
 
 class AdapterTopup(val context: Context, val topupList: List<DataProvider>): RecyclerView.Adapter<AdapterTopup.MyViewHolder>() {
-    private lateinit var sessionManager : SessionManager
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.card_topup, parent, false)
@@ -28,12 +29,11 @@ class AdapterTopup(val context: Context, val topupList: List<DataProvider>): Rec
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        sessionManager = SessionManager(context)
         val currentItem = topupList[position]
+
 
         holder.productName.text = currentItem.name
 
-        // load icon
         Picasso.get()
             .load(R.drawable.bg_listrik)
             .into(holder.productImg)
@@ -48,6 +48,7 @@ class AdapterTopup(val context: Context, val topupList: List<DataProvider>): Rec
 
     override fun getItemCount(): Int {
         return topupList.size
+        Log.d("AdapterTopup", "Item count: ${topupList.size}")
     }
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

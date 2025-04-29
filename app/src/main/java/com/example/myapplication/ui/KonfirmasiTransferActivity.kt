@@ -157,8 +157,6 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
             }
         }
 
-//        getCurrentUser()
-//        getUser(nohp)
     }
 
 //    private fun getCurrentUser() {

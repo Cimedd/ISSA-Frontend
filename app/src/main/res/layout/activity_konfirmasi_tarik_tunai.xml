@@ -58,9 +58,10 @@
             android:id="@+id/txtMetode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
             android:layout_gravity="center"
-            android:textColor="@color/primary"/>
+            android:text="1239389834"
+            android:textColor="@color/primary"
+            android:textSize="15sp" />
 
     </LinearLayout>
 
@@ -82,31 +83,6 @@
         android:layout_marginBottom="15sp"/>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp"
-        android:paddingEnd="15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Rekening"
-            android:textSize="14sp"
-            android:textColor="@color/primary"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/txtRekening"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text=""
-            android:textColor="@color/primary"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
-        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -121,13 +97,14 @@
                 android:textColor="@color/primary"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/txtSubtotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/primary"
-                android:textSize="14sp" />
+        <TextView
+            android:id="@+id/txtSubtotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Rp 100,000"
+            android:textColor="@color/primary"
+            android:textSize="14sp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -174,6 +151,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:text="Rp 102,500"
             android:textColor="@color/primary"
             android:textSize="14sp" />
     </RelativeLayout>

@@ -29,8 +29,8 @@ class SettingRepo(private val api: ApiService, private val settingPref: SettingP
         return settingPref.getID().firstOrNull() ?: ""
     }
 
-    suspend fun saveToDataStore(uid: String, name: String, url: String){
-        settingPref.loggedIn(uid, name, url)
+    suspend fun saveToDataStore(uid: String, name: String, url: String, role : String){
+        settingPref.loggedIn(uid, name, url, role)
     }
 
     suspend fun checkUser(): Boolean {

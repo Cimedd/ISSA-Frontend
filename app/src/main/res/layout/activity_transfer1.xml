@@ -62,10 +62,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="7dp"
         android:background="@drawable/bg_grey_primary"
-        android:orientation="horizontal"
-        android:layout_marginTop="7dp">
+        android:orientation="horizontal">
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -73,19 +73,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="1dp"
-            tools:listitem="@layout/card_user_recent"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            tools:listitem="@layout/card_user_recent" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/btnLanjut"
             style="@style/Widget.Material3.Button.ElevatedButton"
-            app:backgroundTint="@color/primary"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_alignParentBottom="true"
@@ -94,7 +93,8 @@
             android:background="@drawable/bg_primary"
             android:text="Lanjut"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -28,16 +28,13 @@ object KeyGenerator {
 
      fun getSecretKey(): SecretKey {
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply {
-            load(null)  // Initialize the Keystore
+            load(null)
         }
         val existingKey = keyStore.getKey(KEY_ALIAS, null)
 
-
         return if (existingKey != null) {
-            // If the key exists, return it
             existingKey as SecretKey
         } else {
-            // If the key doesn't exist, generate it
             generateKey()
         }
     }

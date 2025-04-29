@@ -55,7 +55,7 @@ data class ResponseProvider(
     @field:SerializedName("message")
     val message: String,
 
-    @field:SerializedName("provider")
+    @field:SerializedName("providers")
     val provider: List<DataProvider>
 )
 
