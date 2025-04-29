@@ -22,6 +22,7 @@ import com.example.myapplication.ui.viewmodel.HomeViewModel
 import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
 import com.example.myapplication.util.TransactionType
+import com.example.myapplication.util.Utility
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -41,6 +42,7 @@ class Transfer2Activity : AppCompatActivity() {
     private lateinit var btn100k: TextView
     private lateinit var btn500k: TextView
     private lateinit var btn1000k: TextView
+    private lateinit var txtNameAcc: TextView
     private lateinit var btnLanjut: Button
 
     private val settingVM by viewModels<SettingViewModel>{
@@ -66,9 +68,12 @@ class Transfer2Activity : AppCompatActivity() {
         btn500k = findViewById(R.id.btn500k)
         btn1000k = findViewById(R.id.btn1000k)
         btnLanjut = findViewById(R.id.btnLanjut)
+        txtNameAcc = findViewById(R.id.txtAccName)
 
         val phone = intent.getStringExtra("nohp").toString()
         val rec_id = intent.getIntExtra("id", 1)
+        val name =  intent.getStringExtra("name")
+        txtNameAcc.text = name
 
         btnBack.setOnClickListener {
             finish()
@@ -100,7 +105,6 @@ class Transfer2Activity : AppCompatActivity() {
 
         btnLanjut.setOnClickListener {
             val catatan: String
-
             // check if amount is empty
             if(editAmount.text.toString().isEmpty()){
                 editAmount.error = "Jumlah tidak boleh kosong"
@@ -187,6 +191,6 @@ class Transfer2Activity : AppCompatActivity() {
 //    }
 
     private fun setAmount(amount: String) {
-        editAmount.setText(amount)
+        editAmount.setText(Utility.moneyFormat(amount.toInt()) )
     }
 }

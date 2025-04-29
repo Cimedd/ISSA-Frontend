@@ -176,5 +176,38 @@ class HomeViewModel(private val repo: ApiRepo) : ViewModel() {
         repo.logout()
     }
 
+    fun addProduct(name : String, category : Int, price : Int, desc : String) = liveData{
+        emit(Result.Loading)
+        try {
+            val response = repo.addProduct(name,category,price,desc)
+            if(response.status == "success"){
+                emit(Result.Success(response.message))
+            }
+            else{
+                emit(Result.Error( response.message ))
+            }
+        }
+        catch (e : Exception){
+            emit(Result.Error( e.message ?: "Unknown error"))
+        }
+    }
+
+    fun addProvider(name : String, id : String) = liveData{
+        emit(Result.Loading)
+        try {
+            val response = repo.addProvider(name,id)
+            if(response.status == "success"){
+                emit(Result.Success(response.message))
+            }
+            else{
+                emit(Result.Error( response.message ))
+            }
+        }
+        catch (e : Exception){
+            emit(Result.Error( e.message ?: "Unknown error"))
+        }
+    }
+
+
 
 }

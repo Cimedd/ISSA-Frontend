@@ -1,9 +1,7 @@
 package com.example.myapplication.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -28,9 +26,6 @@ import com.example.myapplication.util.BiometricUtil
 import com.example.myapplication.util.SecurityUtil
 import com.example.myapplication.util.TransactionType
 import com.example.myapplication.util.Utility
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.json.JSONObject
-import java.text.DecimalFormat
 
 class PembayaranActivity : AppCompatActivity() {
     private lateinit var btnBack: ImageView
@@ -59,7 +54,7 @@ class PembayaranActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
         txtKet = findViewById(R.id.txtKet)
         txtHarga = findViewById(R.id.txtHargaProduk)
-        txtNama = findViewById(R.id.txtNamaProduk)
+        txtNama = findViewById(R.id.txtNamaProvider)
 
 
         val product = intent.getParcelableExtra<DataProduct>("product")

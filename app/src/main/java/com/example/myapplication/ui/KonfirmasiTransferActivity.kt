@@ -93,7 +93,7 @@ class KonfirmasiTransferActivity : AppCompatActivity() {
                     btnSend.isEnabled = false
                 }
                 Result.Loading -> txtSaldo.text = "0"
-                is Result.Success -> txtSaldo.text = it.data.saldo.toString()
+                is Result.Success -> txtSaldo.text = "Rp " + Utility.moneyFormat(it.data.saldo)
             }
         }
 

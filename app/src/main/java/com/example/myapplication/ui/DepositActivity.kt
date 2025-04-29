@@ -192,7 +192,7 @@ class DepositActivity : AppCompatActivity() {
     }
 
     private fun setAmount(amount: String) {
-        editAmount.setText(amount)
+        editAmount.setText(Utility.moneyFormat(amount.toInt()))
     }
 
 //    private fun requestDeposit(method: String?, amount: String) {

@@ -149,7 +149,6 @@ class HomeFragment: Fragment() {
                 is Result.Success -> {
                     stopShimmer()
                     txtName.text =  "Halo, " + it.data.name + "!"
-                    Toast.makeText(requireActivity(), it.data.name, Toast.LENGTH_SHORT).show()
                     txtSaldo.text = Utility.moneyFormat(it.data.saldo)
                 }
             }

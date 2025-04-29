@@ -41,7 +41,10 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             Log.d("Token", settingVM.getUser())
            if(settingVM.checkUser()){
-               if(settingVM.getRole() == "user"){
+               val role = settingVM.getRole()
+               Log.d("role", role)
+               if( role == "user"){
+
                    moveToMain()
                }
                else{
@@ -49,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
                    startActivity(intent)
                    finish()
                }
-
            }
         }
         inputHp = findViewById(R.id.txtNoHp)
@@ -96,7 +98,16 @@ class LoginActivity : AppCompatActivity() {
                             
                         }
                         is Result.Success -> {
-                           moveToMain()
+                            if(it.data.role == "user"){
+                                moveToMain()
+                            }
+                            else{
+
+                                val intent =
+                                    Intent(this@LoginActivity, ActivityAdminMain::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
                         }
                     }
                 }

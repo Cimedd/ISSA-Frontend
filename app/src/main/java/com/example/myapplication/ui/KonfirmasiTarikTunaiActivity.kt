@@ -64,7 +64,8 @@ class KonfirmasiTarikTunaiActivity : AppCompatActivity() {
         cbBio = findViewById(R.id.cbBio)
         txtPin = findViewById(R.id.txtPin)
 
-        val amount = (intent.getStringExtra("amount")?.toInt()?.minus(2500)).toString()
+        val amount = "Rp " + intent.getStringExtra("amount")?.toInt()?.minus(2500)
+            ?.let { Utility.moneyFormat(it.toInt()) }
         val rekening = intent.getStringExtra("rekening")
         val code = Utility.generateTransactionCode()
 

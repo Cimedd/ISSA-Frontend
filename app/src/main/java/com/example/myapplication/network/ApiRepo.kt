@@ -29,6 +29,16 @@ class ApiRepo(private val api : ApiService) {
         return api.getAllTransaction()
     }
 
+    suspend fun addProduct(name : String,  provider : Int, price : Int, desc : String): ResponseStatus{
+        val body = mapOf("name" to name, "provider_id" to provider.toString(), "price" to price.toString(),"desc" to desc )
+        return api.addProduct(body)
+    }
+
+    suspend fun addProvider(name: String,  category: String) : ResponseStatus{
+        val body = mapOf("name" to name, "category_id" to category)
+        return api.addProvider(body)
+    }
+
     suspend fun updateUser(){
 
     }

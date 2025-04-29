@@ -42,6 +42,12 @@ interface ApiService {
     @GET("products/{id}")
     suspend fun getProduct(@Path("id") uid: Int) : ResponseProduct
 
+    @POST("providers")
+    suspend fun addProvider(@Body request: Map<String,String?>) : ResponseStatus
+
+    @POST("products")
+    suspend fun addProduct(@Body request: Map<String,String?>) : ResponseStatus
+
     @GET("contacts")
     suspend fun getContact() : ResponseContact
 

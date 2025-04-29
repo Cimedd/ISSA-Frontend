@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 //import com.androidnetworking.error.ANError
 //import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.example.myapplication.*
+import com.example.myapplication.network.Result
 import com.example.myapplication.ui.EditProfilActivity
 import com.example.myapplication.ui.LoginActivity
 import com.example.myapplication.ui.SessionManager
@@ -28,6 +30,7 @@ import com.example.myapplication.ui.viewmodel.HomeVMF
 import com.example.myapplication.ui.viewmodel.HomeViewModel
 import com.example.myapplication.ui.viewmodel.SettingVMF
 import com.example.myapplication.ui.viewmodel.SettingViewModel
+import com.example.myapplication.util.Utility
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -71,22 +74,35 @@ class SettingFragment : Fragment() {
         photoProfile = view.findViewById(R.id.photoProfile)
         txtName = view.findViewById(R.id.txtName)
         txtHp = view.findViewById(R.id.txtHp)
-        txtUangMasuk = view.findViewById(R.id.txtUangMasuk)
-        txtUangKeluar = view.findViewById(R.id.txtUangKeluar)
 
         shimmer1 = view.findViewById(R.id.shimmer1)
         shimmer2 = view.findViewById(R.id.shimmer2)
         profile = view.findViewById(R.id.profile)
-        stats = view.findViewById(R.id.stats)
         swipe = view.findViewById(R.id.swipe)
 
-//        getUserProfile()
-//        getUserStats()
-
         swipe.setOnRefreshListener {
-//            getUserProfile()
-//            getUserStats()
             swipe.isRefreshing = false
+        }
+
+        homeVM.getUser().observe(requireActivity()){
+            when(it){
+                is Result.Error -> {
+                    txtName.text = "Halo, guess !"
+                    txtHp.text = "XXXXXXXXXXX"
+                    Toast.makeText(requireActivity(), it.error, Toast.LENGTH_SHORT).show()
+                    Log.d("error", it.error + "user")
+                }
+                Result.Loading -> {
+                    startShimmer()
+                    txtName.text = "Halo, guest !"
+                    txtHp.text = "XXXXXXXXXXX"
+                }
+                is Result.Success -> {
+                    stopShimmer()
+                    txtName.text =  "Halo, " + it.data.name + "!"
+                    txtHp.text = it.data.phoneNumber
+                }
+            }
         }
 
         btnEditProdil = view.findViewById(R.id.btnEditProfil)
@@ -108,6 +124,7 @@ class SettingFragment : Fragment() {
                 settingVM.logout()
                 val intent = Intent(activity, LoginActivity::class.java)
                 startActivity(intent)
+                requireActivity().finish()
             }
 
         }

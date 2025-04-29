@@ -50,11 +50,11 @@ class DetailWithdrawActivity : AppCompatActivity() {
             finish()
         }
 //
-//        txtId.text = detail.referenceCode
-//        txtDate.text = Utility.formatDateTime(transaction?.createdAt ?: "")
-//        txtRek.text = detail.accountNumber
-//        txtAmount.text = transaction?.amount.toString()
-//        txtStatus.text = transaction?.status
+        txtId.text = detail.referenceCode
+        txtDate.text = Utility.formatDateTime(transaction?.createdAt ?: "")
+        txtRek.text = detail.accountNumber
+        txtAmount.text = transaction?.amount.toString()
+        txtStatus.text = transaction?.status
 
 //        requestDetailWithdraw(this)
     }

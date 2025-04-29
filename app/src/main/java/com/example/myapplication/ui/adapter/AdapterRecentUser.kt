@@ -43,6 +43,7 @@ class AdapterRecentUser(val context: Context, val userList: List<DataContact>): 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, Transfer2Activity::class.java)
             intent.putExtra("nohp", currentItem.phoneNumber)
+            intent.putExtra("name", currentItem.name)
             intent.putExtra("id", currentItem.id);
             startActivity(context, intent, null)
         }
